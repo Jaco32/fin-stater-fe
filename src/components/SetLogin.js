@@ -1,4 +1,4 @@
-import './SignUp.css';
+import '../css/SignUp.css';
 
 function SetLogin() {
 

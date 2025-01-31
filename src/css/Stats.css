@@ -1,0 +1,38 @@
+.container {
+    display: grid;
+}
+
+.item-all {
+    grid-row-start: 1;
+    grid-row-end: 4;
+}
+
+.item-all {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+.item-period {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+.item-monthly {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+.item-categorized {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+table { 
+    border: solid 1px black; border-collapse: collapse;
+}
+
+th, td { border: solid 1px black; border-collapse: collapse; }
+
+tr:nth-child(even) {
+    background-color: rgba(150, 212, 212, 0.4);
+}

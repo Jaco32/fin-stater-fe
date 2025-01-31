@@ -3,17 +3,6 @@ label.label input[type="file"] {
   top: -1000px;
 }
 
-table { 
-  display: inline-table;
-  border: solid 1px black; border-collapse: collapse
-}
-
-th, td { border: solid 1px black; border-collapse: collapse }
-
-tr:nth-child(even) {
-  background-color: rgba(150, 212, 212, 0.4);
-}
-
 .App {
   text-align: center;
 }

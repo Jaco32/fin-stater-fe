@@ -1,5 +1,5 @@
 import '../App.css'
-import './SignUp.css';
+import '../css/SignUp.css';
 
 function TransactionsFileUpload() {
 

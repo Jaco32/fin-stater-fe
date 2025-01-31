@@ -1,4 +1,4 @@
-import '../App.css'
+import '../css/Stats.css'
 
 function Stats() {
 
@@ -133,47 +133,55 @@ function Stats() {
     let statCategorizedItems = x[3]
     
     return (
-      <>
-        <table>
-          <tr>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Sender</th>
-            <th>Receiver</th>
-            <th>Description</th>
-            <th>Category</th>
-          </tr>
-          <tbody>{items}</tbody>
-        </table>
-        <table>
-          <tr>
-            <th>From</th>
-            <th>To</th>
-            <th>Income</th>
-            <th>Expenses</th>
-            <th>Balance</th>
-          </tr>
-          <tbody>{statItems}</tbody>
-        </table>
-        <table>
-          <tr>
-            <th>Month</th>
-            <th>Income</th>
-            <th>Expenses</th>
-            <th>Balance</th>
-            <th>Stopa zwrotu</th>
-          </tr>
-          <tbody>{statMonthItems}</tbody>
-        </table>
-        <table>
-          <tr>
-            <th>Category</th>
-            <th>Expenses</th>
-          </tr>
-          <tbody>{statCategorizedItems}</tbody>
-        </table>
-      </>
+      <div className='container'>
+        <div className="item-all">
+          <table>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Sender</th>
+              <th>Receiver</th>
+              <th>Description</th>
+              <th>Category</th>
+            </tr>
+            <tbody>{items}</tbody>
+          </table>
+        </div>
+        <div className="item-period">
+          <table>
+            <tr>
+              <th>From</th>
+              <th>To</th>
+              <th>Income</th>
+              <th>Expenses</th>
+              <th>Balance</th>
+            </tr>
+            <tbody>{statItems}</tbody>
+          </table>
+        </div>
+        <div className="item-monthly">
+          <table>
+            <tr>
+              <th>Month</th>
+              <th>Income</th>
+              <th>Expenses</th>
+              <th>Balance</th>
+              <th>Stopa zwrotu</th>
+            </tr>
+            <tbody>{statMonthItems}</tbody>
+          </table>
+        </div>
+        <div className="item-categorized">
+          <table>
+            <tr>
+              <th>Category</th>
+              <th>Expenses</th>
+            </tr>
+            <tbody>{statCategorizedItems}</tbody>
+          </table>
+        </div>
+      </div>
     );
 }
 
