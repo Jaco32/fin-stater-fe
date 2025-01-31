@@ -1,3 +1,5 @@
+import '../App.css'
+
 function Stats() {
 
     async function getStats()
@@ -132,14 +134,6 @@ function Stats() {
     
     return (
       <>
-        <style>
-          {` 
-            table, th, td { border: solid 1px black; border-collapse: collapse} 
-            tr:nth-child(even) {
-              background-color: rgba(150, 212, 212, 0.4);
-            }
-          `}
-        </style>
         <table>
           <tr>
             <th>Date</th>
@@ -152,7 +146,6 @@ function Stats() {
           </tr>
           <tbody>{items}</tbody>
         </table>
-        <br></br>
         <table>
           <tr>
             <th>From</th>
@@ -163,7 +156,6 @@ function Stats() {
           </tr>
           <tbody>{statItems}</tbody>
         </table>
-        <br></br>
         <table>
           <tr>
             <th>Month</th>
@@ -174,7 +166,6 @@ function Stats() {
           </tr>
           <tbody>{statMonthItems}</tbody>
         </table>
-        <br></br>
         <table>
           <tr>
             <th>Category</th>
