@@ -82,13 +82,13 @@ function Stats() {
         const items = []
         for (let i = 0; i < 10; i++) {
           items.push(<tr key={i}>
-              <td>{someState.transaction[i].date.substr(0, 10)}</td>
-              <td>{someState.transaction[i].type}</td>
-              <td>{someState.transaction[i].amount}</td>
+              <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].date.substr(0, 10)}</td>
+              <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].type}</td>
+              <td style={{textAlign: 'center'}}>{someState.transaction[i].amount}</td>
               <td>{someState.transaction[i].sender}</td>
               <td>{someState.transaction[i].receiver}</td>
               <td>{someState.transaction[i].description}</td>
-              <td>{someState.transaction[i].category}</td>
+              <td style={{textAlign: 'center'}}>{someState.transaction[i].category}</td>
             </tr>);
         }
 
