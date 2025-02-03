@@ -1,7 +1,7 @@
 .container {
     display: grid;
     gap: 10px;
-    grid-auto-columns: 60%;
+    grid-auto-columns: 70% 29%;
 }
 
 .item-all {
@@ -9,6 +9,8 @@
     grid-row-end: 4;
     grid-column-start: 1;
     grid-column-end: 2;
+    height: 720px;
+    overflow: scroll;
 }
 
 .item-period {

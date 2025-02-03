@@ -80,7 +80,7 @@ function Stats() {
           (someState.statCategorized != undefined))
       {
         const items = []
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < someState.transaction.length; i++) {
           items.push(<tr key={i}>
               <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].date.substr(0, 10)}</td>
               <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].type}</td>
