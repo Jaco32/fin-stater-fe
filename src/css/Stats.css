@@ -52,6 +52,14 @@ th {
     padding-right: 10px;
 }
 
+tr:hover {
+    background-color: aquamarine;
+}
+
 tr:nth-child(even) {
     background-color: rgba(150, 212, 212, 0.4);
+}
+
+tr:nth-child(even):hover {
+    background-color: aquamarine;
 }

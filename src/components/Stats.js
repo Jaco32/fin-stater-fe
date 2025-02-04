@@ -72,6 +72,10 @@ function Stats() {
         return myState;
     }
 
+    function getRowId(prm) {
+      console.log(prm.target.parentNode.rowIndex)
+    }
+
     function parseStats(someState)
     {
       if ((someState.transaction != undefined) &&
@@ -81,7 +85,7 @@ function Stats() {
       {
         const items = []
         for (let i = 0; i < someState.transaction.length; i++) {
-          items.push(<tr key={i}>
+          items.push(<tr key={i} onClick={(event) => getRowId(event)}>
               <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].date.substr(0, 10)}</td>
               <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].type}</td>
               <td style={{textAlign: 'center'}}>{someState.transaction[i].amount}</td>
@@ -126,6 +130,24 @@ function Stats() {
       }
     }
 
+    function filterTable() {
+      var filter = document.getElementById("table-search-input").value.toUpperCase()
+      var table = document.getElementById("transactions-table");
+      var tr = table.getElementsByTagName("tr");
+    
+      for (let i = 0; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          let tdValue = td.textContent || td.innerText;
+          if (tdValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+
     let x = parseStats(getStatsSynch())
     let items = x[0]
     let statItems = x[1]
@@ -135,7 +157,8 @@ function Stats() {
     return (
       <div className='container'>
         <div className="item-all">
-          <table>
+          <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...'/>
+          <table id="transactions-table">
             <tr>
               <th>Date</th>
               <th>Type</th>
