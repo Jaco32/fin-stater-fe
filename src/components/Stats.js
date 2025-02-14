@@ -1,132 +1,110 @@
 import '../css/Stats.css'
+import { useState } from 'react';
 
 function Stats() {
 
-    async function getStats()
-    {
-        let myState = {}
+    const [trigger, setTrigger] = useState(0)
+//    const [transactions, setTransactions] = useState([])
 
-        const response = await fetch('http://localhost:8080/transaction', {
-          headers: {
-            "mode": "no-cors"
-          }
-        })
-        const responseValue = (await response.text()).toString()
-        myState.transaction = JSON.parse(responseValue)
+    function getTransactionsSynch() {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", 'http://localhost:8080/transaction', false);
+        xhr.setRequestHeader('mode', 'no-cors');
+        xhr.send(null);
+        return JSON.parse(xhr.responseText)
+    }
 
-        const statResponse = await fetch('http://localhost:8080/stat', {
-          headers: {
-            "mode": "no-cors"
-          }
-        })
-        const statResponseValue = (await statResponse.text()).toString()
-        myState.stat = JSON.parse(statResponseValue)
-    
-        const statMonthResponse = await fetch('http://localhost:8080/stat/month', {
-          headers: {
-            "mode": "no-cors"
-          }
-        })
-        const statMonthResponseValue = (await statMonthResponse.text()).toString()
-        myState.statMonth = JSON.parse(statMonthResponseValue)
-    
-        const statCategorizedResponse = await fetch('http://localhost:8080/stat/categorized', {
-          headers: {
-            "mode": "no-cors"
-          }
-        })
-        const statCategorizedResponseValue = (await statCategorizedResponse.text()).toString()
-        myState.statCategorized = JSON.parse(statCategorizedResponseValue)
+    function parseTransactions(transactions) {
+        if (transactions != undefined) {
+            const transactionsItems = []
+            for (let i = 0; i < transactions.length; i++) {
+                if (transactions[i].usedForCalculation == false)
+                  transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)} style={{ backgroundColor: "blueviolet"}}>
+                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
+                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
+                      <td style={{textAlign: 'center'}}>{transactions[i].amount}</td>
+                      <td>{transactions[i].sender}</td>
+                      <td>{transactions[i].receiver}</td>
+                      <td>{transactions[i].description}</td>
+                      <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                    </tr>);
+                else {
+                  transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)}>
+                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
+                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
+                      <td style={{textAlign: 'center'}}>{transactions[i].amount}</td>
+                      <td>{transactions[i].sender}</td>
+                      <td>{transactions[i].receiver}</td>
+                      <td>{transactions[i].description}</td>
+                      <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                    </tr>);
+                }
+            }
 
-        return myState
+            return transactionsItems;
+        }
     }
 
     function getStatsSynch()
     {
-        let myState = {};
-    
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", 'http://localhost:8080/transaction', false);
-        xhr.setRequestHeader('mode', 'no-cors');
-        xhr.send(null);
-        myState.transaction = JSON.parse(xhr.responseText);
+        let stats = {};
 
-        var xhr0 = new XMLHttpRequest();
+        let xhr0 = new XMLHttpRequest();
         xhr0.open("GET", 'http://localhost:8080/stat', false);
         xhr0.setRequestHeader('mode', 'no-cors');
         xhr0.send(null);
-        myState.stat = JSON.parse(xhr0.responseText)
+        stats.stat = JSON.parse(xhr0.responseText)
 
-        var xhr1 = new XMLHttpRequest();
+        let xhr1 = new XMLHttpRequest();
         xhr1.open("GET", 'http://localhost:8080/stat/month', false);
         xhr1.setRequestHeader('mode', 'no-cors');
         xhr1.send(null);
-        myState.statMonth = JSON.parse(xhr1.responseText)
+        stats.statMonth = JSON.parse(xhr1.responseText)
 
-        var xhr2 = new XMLHttpRequest();
+        let xhr2 = new XMLHttpRequest();
         xhr2.open("GET", 'http://localhost:8080/stat/categorized', false);
         xhr2.setRequestHeader('mode', 'no-cors');
         xhr2.send(null);
-        myState.statCategorized = JSON.parse(xhr2.responseText)
+        stats.statCategorized = JSON.parse(xhr2.responseText)
 
-        return myState;
+        return stats;
     }
 
-    function getRowId(prm) {
-      console.log(prm.target.parentNode.rowIndex)
-    }
-
-    function parseStats(someState)
+    function parseStats(stats)
     {
-      if ((someState.transaction != undefined) &&
-          (someState.stat != undefined) &&
-          (someState.statMonth != undefined) &&
-          (someState.statCategorized != undefined))
+      if ((stats.stat != undefined) &&
+          (stats.statMonth != undefined) &&
+          (stats.statCategorized != undefined))
       {
-        const items = []
-        for (let i = 0; i < someState.transaction.length; i++) {
-          items.push(<tr key={i} onClick={(event) => getRowId(event)}>
-              <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].date.substr(0, 10)}</td>
-              <td style={{whiteSpace: 'nowrap'}}>{someState.transaction[i].type}</td>
-              <td style={{textAlign: 'center'}}>{someState.transaction[i].amount}</td>
-              <td>{someState.transaction[i].sender}</td>
-              <td>{someState.transaction[i].receiver}</td>
-              <td>{someState.transaction[i].description}</td>
-              <td style={{textAlign: 'center'}}>{someState.transaction[i].category}</td>
-            </tr>);
-        }
+        const statsOverall = []
+        statsOverall.push(<tr>
+            <td>{stats.stat.from_date.substr(0, 10)}</td>
+            <td>{stats.stat.to.substr(0, 10)}</td>
+            <td>{stats.stat.income}</td>
+            <td>{stats.stat.expenses}</td>
+            <td>{stats.stat.periodBalance.toFixed(2)}</td>
+          </tr>)
 
-        const statItems = []
-        for (let i = 0; i < 1; i++) {
-          statItems.push(<tr>
-              <td>{someState.stat.from_date.substr(0, 10)}</td>
-              <td>{someState.stat.to.substr(0, 10)}</td>
-              <td>{someState.stat.income}</td>
-              <td>{someState.stat.expenses}</td>
-              <td>{someState.stat.periodBalance.toFixed(2)}</td>
+        const statsPerMonth = []
+        for (let i = 0; i < stats.statMonth.length; i++) {
+          statsPerMonth.push(<tr key={i}>
+              <td>{stats.statMonth[i].month}</td>
+              <td>{stats.statMonth[i].income}</td>
+              <td>{stats.statMonth[i].expenses.toFixed(2)}</td>
+              <td>{stats.statMonth[i].balance.toFixed(2)}</td>
+              <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
             </tr>)
         }
 
-        const statMonthItems = []
-        for (let i = 0; i < 7; i++) {
-          statMonthItems.push(<tr key={i}>
-              <td>{someState.statMonth[i].month}</td>
-              <td>{someState.statMonth[i].income}</td>
-              <td>{someState.statMonth[i].expenses.toFixed(2)}</td>
-              <td>{someState.statMonth[i].balance.toFixed(2)}</td>
-              <td>{someState.statMonth[i].rateOfReturn.toFixed(0)} %</td>
+        const statsPerCategory = []
+        for (let i = 0; i < stats.statCategorized.length; i++) {
+          statsPerCategory.push(<tr key={i}>
+              <td>{stats.statCategorized[i].category}</td>
+              <td>{stats.statCategorized[i].expense.toFixed(2)}</td>
             </tr>)
         }
 
-        const statCategorizedItems = []
-        for (let i = 0; i < 11; i++) {
-          statCategorizedItems.push(<tr key={i}>
-              <td>{someState.statCategorized[i].category}</td>
-              <td>{someState.statCategorized[i].expense.toFixed(2)}</td>
-            </tr>)
-        }
-
-        return [items, statItems, statMonthItems, statCategorizedItems]
+        return [statsOverall, statsPerMonth, statsPerCategory]
       }
     }
 
@@ -148,17 +126,26 @@ function Stats() {
       }
     }
 
-    let x = parseStats(getStatsSynch())
-    let items = x[0]
-    let statItems = x[1]
-    let statMonthItems = x[2]
-    let statCategorizedItems = x[3]
+    function excludeRow(event) {
+      let xhr = new XMLHttpRequest()
+      xhr.open('PATCH', 'http://localhost:8080/transaction/' + event.target.parentNode.rowIndex, false)
+      xhr.setRequestHeader('mode', 'no-cors');
+      xhr.send(null)
+
+      setTrigger(trigger + 1)
+    }
+
+    var parsedTransaction = parseTransactions(getTransactionsSynch())
+    let parsedStats = parseStats(getStatsSynch())
+    var statsOverall = parsedStats[0]
+    var statsPerMonth = parsedStats[1]
+    var statsPerCategory = parsedStats[2]
     
     return (
       <div className='container'>
         <div className="item-all">
           <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...'/>
-          <table id="transactions-table">
+          <table id="transactions-table" style={{ fontSize: "12px"}}>
             <tr>
               <th>Date</th>
               <th>Type</th>
@@ -168,7 +155,7 @@ function Stats() {
               <th>Description</th>
               <th>Category</th>
             </tr>
-            <tbody>{items}</tbody>
+            <tbody>{parsedTransaction}</tbody>
           </table>
         </div>
         <div className="item-period">
@@ -180,7 +167,7 @@ function Stats() {
               <th>Expenses</th>
               <th>Balance</th>
             </tr>
-            <tbody>{statItems}</tbody>
+            <tbody>{statsOverall}</tbody>
           </table>
         </div>
         <div className="item-monthly">
@@ -192,7 +179,7 @@ function Stats() {
               <th>Balance</th>
               <th>Stopa zwrotu</th>
             </tr>
-            <tbody>{statMonthItems}</tbody>
+            <tbody>{statsPerMonth}</tbody>
           </table>
         </div>
         <div className="item-categorized">
@@ -201,7 +188,7 @@ function Stats() {
               <th>Category</th>
               <th>Expenses</th>
             </tr>
-            <tbody>{statCategorizedItems}</tbody>
+            <tbody>{statsPerCategory}</tbody>
           </table>
         </div>
       </div>
