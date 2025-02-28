@@ -6,7 +6,7 @@
 
 .item-all {
     grid-row-start: 1;
-    grid-row-end: 4;
+    grid-row-end: 5;
     grid-column-start: 1;
     grid-column-end: 2;
     height: 720px;
@@ -20,18 +20,25 @@
     grid-row-end: 2;
 }
 
-.item-monthly {
+.item-avarage {
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start: 2;
     grid-row-end: 3;
 }
 
-.item-categorized {
+.item-monthly {
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start: 3;
     grid-row-end: 4;
+}
+
+.item-categorized {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 4;
+    grid-row-end: 5;
 }
 
 table { 

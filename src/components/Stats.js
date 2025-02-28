@@ -67,6 +67,12 @@ function Stats() {
         xhr2.send(null);
         stats.statCategorized = JSON.parse(xhr2.responseText)
 
+        let xhr3 = new XMLHttpRequest();
+        xhr3.open("GET", 'http://localhost:8080/stat/avarage', false);
+        xhr3.setRequestHeader('mode', 'no-cors');
+        xhr3.send(null);
+        stats.statAvarage = JSON.parse(xhr3.responseText)
+
         return stats;
     }
 
@@ -74,7 +80,8 @@ function Stats() {
     {
       if ((stats.stat != undefined) &&
           (stats.statMonth != undefined) &&
-          (stats.statCategorized != undefined))
+          (stats.statCategorized != undefined) &&
+          (stats.statAvarage != undefined))
       {
         const statsOverall = []
         statsOverall.push(<tr>
@@ -104,7 +111,14 @@ function Stats() {
             </tr>)
         }
 
-        return [statsOverall, statsPerMonth, statsPerCategory]
+        const statsAvarage = []
+        statsAvarage.push(<tr>
+            <td>{stats.statAvarage.avarageIncome.toFixed(2)}</td>
+            <td>{stats.statAvarage.avarageExpenses.toFixed(2)}</td>
+            <td>{stats.statAvarage.avarageBalance.toFixed(2)}</td>
+          </tr>)
+
+        return [statsOverall, statsPerMonth, statsPerCategory, statsAvarage]
       }
     }
 
@@ -140,6 +154,7 @@ function Stats() {
     var statsOverall = parsedStats[0]
     var statsPerMonth = parsedStats[1]
     var statsPerCategory = parsedStats[2]
+    var statsAvarage = parsedStats[3]
     
     return (
       <div className='container'>
@@ -168,6 +183,16 @@ function Stats() {
               <th>Balance</th>
             </tr>
             <tbody>{statsOverall}</tbody>
+          </table>
+        </div>
+        <div className="item-avarage">
+          <table>
+            <tr>
+              <th>Avg. Income</th>
+              <th>Avg. Expense</th>
+              <th>Avg. Savings</th>
+            </tr>
+            <tbody>{statsAvarage}</tbody>
           </table>
         </div>
         <div className="item-monthly">
