@@ -43,7 +43,14 @@ function SetLogin() {
     return (
         <div className='App'>
             <form id="id_set_login_form" action='upload_transactions' onSubmit={handleSignUp}>
-                <input type="text" id="id-set-login-input-text" name="name-set-login-input-text" form="id_set_login_form" placeholder='Login..'></input><br/><br/>
+                <input
+                    type="text"
+                    id="id-set-login-input-text"
+                    name="name-set-login-input-text"
+                    form="id_set_login_form"
+                    placeholder='Login..'
+                    required
+                /><br/><br/>
                 <input className="button-54" type="submit" value="Create"></input>
             </form>
         </div>
