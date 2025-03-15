@@ -10,7 +10,11 @@ function Logo() {
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", 'http://localhost:8080/transaction/upload/', false);
                 xhr.setRequestHeader('mode', 'no-cors');
-                xhr.setRequestHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                if (file.name.split(".")[1] == "xlsx") {
+                    xhr.setRequestHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                } else {
+                    xhr.setRequestHeader('Content-Type', 'text/csv');
+                }
                 xhr.send(value);
         });
         window.location.assign("/stats")
@@ -24,7 +28,13 @@ function Logo() {
                 <h4 style={{textAlignLast: 'left', marginTop: '0px', display: 'inline'}}>Basic Financial Statistics</h4>
             </span>
             <label className='label'>
-                <input type='file' onChange={handleFileAdd} id='id-transactions-file-add' required/>
+                <input
+                    type='file'
+                    onChange={handleFileAdd}
+                    id='id-transactions-file-add'
+                    accept=".xlsx,.csv"
+                    required
+                />
                 <span className='button-54' style={{display: 'inline', top: '-35px', left: '40px'}}>Add file</span>
             </label>
             <button className="button-54" type='button' style={{display: 'inline', position: 'relative', top: '-35px', left: '65px'}}>Log out</button>

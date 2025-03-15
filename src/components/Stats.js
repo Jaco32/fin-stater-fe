@@ -88,19 +88,44 @@ function Stats() {
             <td>{stats.stat.from_date.substr(0, 10)}</td>
             <td>{stats.stat.to.substr(0, 10)}</td>
             <td>{stats.stat.income}</td>
-            <td>{stats.stat.expenses}</td>
+            <td>{stats.stat.expenses.toFixed(2)}</td>
             <td>{stats.stat.periodBalance.toFixed(2)}</td>
           </tr>)
 
         const statsPerMonth = []
         for (let i = 0; i < stats.statMonth.length; i++) {
-          statsPerMonth.push(<tr key={i}>
-              <td>{stats.statMonth[i].month}</td>
-              <td>{stats.statMonth[i].income}</td>
-              <td>{stats.statMonth[i].expenses.toFixed(2)}</td>
-              <td>{stats.statMonth[i].balance.toFixed(2)}</td>
-              <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
-            </tr>)
+          var categorizedMonthly = []
+          for (let j = 0; j < stats.statMonth[i].categorizedMonthly.length; j++) {
+              categorizedMonthly.push(
+                  <tr key={j} className="sub-table">
+                    <td style={{ borderLeft: "0px", borderBottom: "0px"}}>{stats.statMonth[i].categorizedMonthly[j].category}</td>
+                    <td style={{ borderRight: "0px", borderBottom: "0px"}}>{stats.statMonth[i].categorizedMonthly[j].expense.toFixed(2)}</td>
+                  </tr>
+              )
+          }
+
+          statsPerMonth.push(
+            <>
+              <tr key={i}>
+                <td>{stats.statMonth[i].monthName}</td>
+                <td>{stats.statMonth[i].income}</td>
+                <td>{stats.statMonth[i].expenses.toFixed(2)}</td>
+                <td>{stats.statMonth[i].balance.toFixed(2)}</td>
+                <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
+              </tr>
+              <tr>
+                <td colSpan={5} style={{ paddingLeft: "0px", paddingRight: "0px", paddingBottom: "0px", paddingTop: "0px"}}>
+                  <table className="sub-table" style={{ width: "100%"}}>
+                    <tr className="sub-table">
+                      <th className="sub-table" style={{ borderRight: "solid black 1px"}}>Category</th>
+                      <th className="sub-table">Expenses</th>
+                    </tr>
+                    <tbody>{categorizedMonthly}</tbody>
+                  </table>
+                </td>
+              </tr>
+            </>
+          )
         }
 
         const statsPerCategory = []
@@ -128,10 +153,12 @@ function Stats() {
       var tr = table.getElementsByTagName("tr");
     
       for (let i = 0; i < tr.length; i++) {
-        let td = tr[i].getElementsByTagName("td")[1];
-        if (td) {
-          let tdValue = td.textContent || td.innerText;
-          if (tdValue.toUpperCase().indexOf(filter) > -1) {
+        let td_type = tr[i].getElementsByTagName("td")[1];
+        let td_category = tr[i].getElementsByTagName("td")[6];
+        if (td_type && td_category) {
+          let tdTypeValue = td_type.textContent || td_type.innerText;
+          let tdCategoryValue = td_category.textContent || td_category.innerText;
+          if ((tdTypeValue.toUpperCase().indexOf(filter)) > -1 || (tdCategoryValue.toUpperCase().indexOf(filter) > -1)) {
             tr[i].style.display = "";
           } else {
             tr[i].style.display = "none";

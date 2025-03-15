@@ -46,6 +46,11 @@ table {
     font-family: "Open Sans", sans-serif;
 }
 
+.sub-table {
+    border-width: 0px;
+    font-size: 12px;
+}
+
 td { 
     border: solid 1px black; border-collapse: collapse;
     padding-left: 10px;
