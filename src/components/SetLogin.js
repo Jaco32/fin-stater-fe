@@ -20,26 +20,6 @@ function SetLogin() {
         xhr.send(null);
     }
 
-    async function handleSubmit() {
-
-        // Get form data
-        const form = document.getElementById('id_set_login_form');
-        const formData = new FormData(form);
-    
-        // Convert form data to an object
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-    
-        const response = await fetch('http://localhost:8080/user/create/' + data['name-set-login-input-text'], {
-            method: 'POST',
-            headers: {
-                "mode": "no-cors"
-            }
-        })
-    }
-
     return (
         <div className='App'>
             <form id="id_set_login_form" action='upload_transactions' onSubmit={handleSignUp}>

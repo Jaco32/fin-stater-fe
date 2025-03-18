@@ -1,7 +1,7 @@
 .container {
     display: grid;
     gap: 10px;
-    grid-auto-columns: 70% 29%;
+    grid-auto-columns: 63% 37%;
 }
 
 .item-all {

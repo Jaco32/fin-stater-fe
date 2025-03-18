@@ -4,7 +4,6 @@ import { useState } from 'react';
 function Stats() {
 
     const [trigger, setTrigger] = useState(0)
-//    const [transactions, setTransactions] = useState([])
 
     function getTransactionsSynch() {
         let xhr = new XMLHttpRequest();
@@ -27,6 +26,8 @@ function Stats() {
                       <td>{transactions[i].receiver}</td>
                       <td>{transactions[i].description}</td>
                       <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                      <td>{transactions[i].additional_info}</td>
+                      <td>{transactions[i].additional_info_2}</td>
                     </tr>);
                 else {
                   transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)}>
@@ -37,6 +38,8 @@ function Stats() {
                       <td>{transactions[i].receiver}</td>
                       <td>{transactions[i].description}</td>
                       <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                      <td>{transactions[i].additional_info}</td>
+                      <td>{transactions[i].additional_info_2}</td>
                     </tr>);
                 }
             }
@@ -84,13 +87,17 @@ function Stats() {
           (stats.statAvarage != undefined))
       {
         const statsOverall = []
-        statsOverall.push(<tr>
-            <td>{stats.stat.from_date.substr(0, 10)}</td>
-            <td>{stats.stat.to.substr(0, 10)}</td>
-            <td>{stats.stat.income}</td>
-            <td>{stats.stat.expenses.toFixed(2)}</td>
-            <td>{stats.stat.periodBalance.toFixed(2)}</td>
+        for (let i = 0; i < stats.stat.length; i++) {
+          statsOverall.push(<tr>
+            <td>{stats.stat[i].from_date.substr(0, 10)}</td>
+            <td>{stats.stat[i].to.substr(0, 10)}</td>
+            <td>{stats.stat[i].income.toFixed(2)}</td>
+            <td>{stats.stat[i].expenses.toFixed(2)}</td>
+            <td>{stats.stat[i].periodBalance.toFixed(2)}</td>
+            <td>{stats.stat[i].viewName}</td>
           </tr>)
+        }
+        
 
         const statsPerMonth = []
         for (let i = 0; i < stats.statMonth.length; i++) {
@@ -108,7 +115,7 @@ function Stats() {
             <>
               <tr key={i}>
                 <td>{stats.statMonth[i].monthName}</td>
-                <td>{stats.statMonth[i].income}</td>
+                <td>{stats.statMonth[i].income.toFixed(2)}</td>
                 <td>{stats.statMonth[i].expenses.toFixed(2)}</td>
                 <td>{stats.statMonth[i].balance.toFixed(2)}</td>
                 <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
@@ -147,7 +154,9 @@ function Stats() {
       }
     }
 
+    var visibleRows = []
     function filterTable() {
+      visibleRows = []
       var filter = document.getElementById("table-search-input").value.toUpperCase()
       var table = document.getElementById("transactions-table");
       var tr = table.getElementsByTagName("tr");
@@ -155,16 +164,39 @@ function Stats() {
       for (let i = 0; i < tr.length; i++) {
         let td_type = tr[i].getElementsByTagName("td")[1];
         let td_category = tr[i].getElementsByTagName("td")[6];
+        let td_info_1 = tr[i].getElementsByTagName("td")[7];
+        let td_info_2 = tr[i].getElementsByTagName("td")[8];
+
         if (td_type && td_category) {
           let tdTypeValue = td_type.textContent || td_type.innerText;
           let tdCategoryValue = td_category.textContent || td_category.innerText;
-          if ((tdTypeValue.toUpperCase().indexOf(filter)) > -1 || (tdCategoryValue.toUpperCase().indexOf(filter) > -1)) {
+          let tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
+          let tdInfo2Value = td_info_2.textContent || td_info_2.innerText;
+
+          if ((tdTypeValue.toUpperCase().indexOf(filter) > -1) || 
+              (tdCategoryValue.toUpperCase().indexOf(filter) > -1) ||
+              (tdInfo1Value.toUpperCase().indexOf(filter) > -1) ||
+              (tdInfo2Value.toUpperCase().indexOf(filter) > -1))
+          {
             tr[i].style.display = "";
+            visibleRows.push(i);
           } else {
             tr[i].style.display = "none";
           }
         }
       }
+    }
+
+    function calculateView() {
+        var viewName = document.getElementById('view-name-input').value;
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("PATCH", 'http://localhost:8080/stat/view/' + viewName, false);
+        xhr.setRequestHeader('mode', 'no-cors');
+        xhr.setRequestHeader('Content-Type', 'text/plain');
+        xhr.send(visibleRows.toString());
+        
+        window.location.assign("/stats")
     }
 
     function excludeRow(event) {
@@ -186,7 +218,11 @@ function Stats() {
     return (
       <div className='container'>
         <div className="item-all">
-          <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...'/>
+          <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...' style={{ marginRight: "15px" }}/>
+          <input type='text' id='view-name-input' placeholder='Enter view name...' style={{ marginRight: "15px" }}/>
+          <button onClick={calculateView}>Calculate View</button>
+          <br></br>
+          <br></br>
           <table id="transactions-table" style={{ fontSize: "12px"}}>
             <tr>
               <th>Date</th>
@@ -196,6 +232,8 @@ function Stats() {
               <th>Receiver</th>
               <th>Description</th>
               <th>Category</th>
+              <th>Additional info 1</th>
+              <th>Additional info 2</th>
             </tr>
             <tbody>{parsedTransaction}</tbody>
           </table>
@@ -208,6 +246,7 @@ function Stats() {
               <th>Income</th>
               <th>Expenses</th>
               <th>Balance</th>
+              <th>View name</th>
             </tr>
             <tbody>{statsOverall}</tbody>
           </table>
