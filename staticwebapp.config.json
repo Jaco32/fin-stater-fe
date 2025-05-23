@@ -2,9 +2,7 @@
   "routes": [
     {
       "route": "/set_login",
-      "methods": [
-        "get"
-      ]
+      "redirect": "/set_login"
     }
   ]
 }
