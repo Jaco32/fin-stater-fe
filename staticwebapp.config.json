@@ -2,7 +2,7 @@
   "routes": [
     {
       "route": "/set_login",
-      "redirect": "/set_login"
+      "rewrite": "/set_login"
     }
   ]
 }
