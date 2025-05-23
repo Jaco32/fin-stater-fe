@@ -10,7 +10,7 @@ function Logo() {
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", 'http://localhost:8080/transaction/upload/', false);
                 xhr.setRequestHeader('mode', 'no-cors');
-                if (file.name.split(".")[1] == "xlsx") {
+                if (file.name.split(".")[1] === "xlsx") {
                     xhr.setRequestHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 } else {
                     xhr.setRequestHeader('Content-Type', 'text/csv');

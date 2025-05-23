@@ -14,10 +14,10 @@ function Stats() {
     }
 
     function parseTransactions(transactions) {
-        if (transactions != undefined) {
+        if (transactions !== undefined) {
             const transactionsItems = []
             for (let i = 0; i < transactions.length; i++) {
-                if (transactions[i].usedForCalculation == false)
+                if (transactions[i].usedForCalculation === false)
                   transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)} style={{ backgroundColor: "blueviolet"}}>
                       <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
                       <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
@@ -81,10 +81,10 @@ function Stats() {
 
     function parseStats(stats)
     {
-      if ((stats.stat != undefined) &&
-          (stats.statMonth != undefined) &&
-          (stats.statCategorized != undefined) &&
-          (stats.statAvarage != undefined))
+      if ((stats.stat !== undefined) &&
+          (stats.statMonth !== undefined) &&
+          (stats.statCategorized !== undefined) &&
+          (stats.statAvarage !== undefined))
       {
         const statsOverall = []
         for (let i = 0; i < stats.stat.length; i++) {

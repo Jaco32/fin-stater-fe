@@ -5,7 +5,7 @@ function SetLogin() {
     function handleSignUp() {
 
         // Get form data
-        const form = document.getElementById('id_set_login_form');
+        const form = document.getElementById('id_sign_up_form');
         const formData = new FormData(form);
 
         // Convert form data to an object
@@ -15,20 +15,28 @@ function SetLogin() {
         });
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", 'http://localhost:8080/user/create/' + data['name-set-login-input-text'], false);
+        xhr.open("POST", 'http://localhost:8080/user/create/' + data['name-set-login-input'] + "/" + data['name-set-pwd-input'], false);
         xhr.setRequestHeader('mode', 'no-cors');
         xhr.send(null);
     }
 
     return (
         <div className='App'>
-            <form id="id_set_login_form" action='upload_transactions' onSubmit={handleSignUp}>
+            <form id="id_sign_up_form" action='upload_transactions' onSubmit={handleSignUp}>
                 <input
                     type="text"
-                    id="id-set-login-input-text"
-                    name="name-set-login-input-text"
-                    form="id_set_login_form"
+                    id="id-set-login-input"
+                    name="name-set-login-input"
+                    form="id_sign_up_form"
                     placeholder='Login..'
+                    required
+                /><br/><br/>
+                <input
+                    type="password"
+                    id="id-set-psw-input"
+                    name="name-set-psw-input"
+                    form="id_sign_up_form"
+                    placeholder='Password..'
                     required
                 /><br/><br/>
                 <input className="button-54" type="submit" value="Create"></input>

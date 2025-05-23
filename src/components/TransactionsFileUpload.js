@@ -10,7 +10,7 @@ function TransactionsFileUpload() {
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", 'http://localhost:8080/transaction/upload/', false);
                 xhr.setRequestHeader('mode', 'no-cors');
-                if (file.name.split(".")[1] == "xlsx") {
+                if (file.name.split(".")[1] === "xlsx") {
                     xhr.setRequestHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 } else {
                     xhr.setRequestHeader('Content-Type', 'text/csv');
@@ -19,24 +19,6 @@ function TransactionsFileUpload() {
         });
         window.location.assign("/stats")
     }
-
-    function handleFileSubmit() {
-        var file = document.getElementById('id-transactions-file-upload').files[0];
-        let myPromise = file.arrayBuffer();
-        myPromise.then(
-            async function(value) {
-            const response = await fetch('http://localhost:8080/transaction/upload/', {
-                method: 'POST',
-                headers: {
-                    "mode": "no-cors",
-                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                },
-                body: value
-            })
-        });
-        window.location.assign("/stats")
-    }
-
 
     return (
         <div className='App'>
