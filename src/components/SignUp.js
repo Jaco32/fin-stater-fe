@@ -9,6 +9,7 @@ function SignUp() {
         <div className='App'>
             <button className="button-54" type='button'>Sing In</button><br/><br/>
             <button className="button-54" type='button' onClick={(event) => navigate('/set_login')}>Sing Up</button>
+            <h1>{process.env.REACT_APP_SOME_VAR}</h1>
         </div>
     )
 }
