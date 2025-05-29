@@ -1,5 +1,8 @@
 name: Azure Static Web Apps CI/CD
 
+env:
+  REACT_APP_SOME_VAR: some_value
+
 on:
   push:
     branches:
