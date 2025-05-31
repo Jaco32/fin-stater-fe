@@ -2,10 +2,9 @@ import '../css/SignUp.css';
 import { useNavigate } from "react-router-dom";
 
 function SetLogin() {
+    const navigate = useNavigate();
 
     function handleSignUp() {
-        const navigate = useNavigate();
-
         // Get form data
         const form = document.getElementById('id_sign_up_form');
         const formData = new FormData(form);
