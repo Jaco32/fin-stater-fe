@@ -1,14 +1,17 @@
 import '../App.css'
 import '../css/SignUp.css';
+import { useNavigate } from "react-router-dom";
 
 function TransactionsFileUpload() {
+    const navigate = useNavigate();
+
     function handleFileUpload() {
         var file = document.getElementById('id-transactions-file-upload').files[0];
         let myPromise = file.arrayBuffer();
         myPromise.then(
             function(value) {
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", 'http://localhost:8080/transaction/upload/', false);
+                xhr.open("POST", process.env.REACT_APP_BACKEND_URL + '/transaction/upload/', false);
                 xhr.setRequestHeader('mode', 'no-cors');
                 if (file.name.split(".")[1] === "xlsx") {
                     xhr.setRequestHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -17,7 +20,7 @@ function TransactionsFileUpload() {
                 }
                 xhr.send(value);
         });
-        window.location.assign("/stats")
+        navigate("/stats")
     }
 
     return (

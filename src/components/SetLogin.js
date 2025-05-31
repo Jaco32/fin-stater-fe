@@ -15,7 +15,8 @@ function SetLogin() {
         });
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", 'http://localhost:8080/user/create/' + data['name-set-login-input'] + "/" + data['name-set-pwd-input'], false);
+        const createUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/create/' + data['name-set-login-input'] + "/" + data['name-set-psw-input']
+        xhr.open("POST", createUserUrl, false);
         xhr.setRequestHeader('mode', 'no-cors');
         xhr.send(null);
     }
