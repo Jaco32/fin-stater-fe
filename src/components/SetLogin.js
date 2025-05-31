@@ -1,8 +1,10 @@
 import '../css/SignUp.css';
+import { useNavigate } from "react-router-dom";
 
 function SetLogin() {
 
     function handleSignUp() {
+        const navigate = useNavigate();
 
         // Get form data
         const form = document.getElementById('id_sign_up_form');
@@ -19,11 +21,12 @@ function SetLogin() {
         xhr.open("POST", createUserUrl, false);
         xhr.setRequestHeader('mode', 'no-cors');
         xhr.send(null);
+        navigate('/upload_transactions')
     }
 
     return (
         <div className='App'>
-            <form id="id_sign_up_form" action='upload_transactions' onSubmit={handleSignUp}>
+            <form id="id_sign_up_form" onSubmit={handleSignUp}>
                 <input
                     type="text"
                     id="id-set-login-input"
