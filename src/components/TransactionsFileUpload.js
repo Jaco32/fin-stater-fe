@@ -19,8 +19,8 @@ function TransactionsFileUpload() {
                     xhr.setRequestHeader('Content-Type', 'text/csv');
                 }
                 xhr.send(value);
+                navigate("/stats")
         });
-        navigate("/stats")
     }
 
     return (
