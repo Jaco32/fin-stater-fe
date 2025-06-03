@@ -1,6 +1,8 @@
 import '../css/SignUp.css';
+import { useNavigate } from "react-router-dom";
 
 function Logo() {
+    const navigate = useNavigate();
 
     function handleFileAdd() {
         var file = document.getElementById('id-transactions-file-add').files[0];
@@ -37,7 +39,14 @@ function Logo() {
                 />
                 <span className='button-54' style={{display: 'inline', top: '-35px', left: '40px'}}>Add file</span>
             </label>
-            <button className="button-54" type='button' style={{display: 'inline', position: 'relative', top: '-35px', left: '65px'}}>Log out</button>
+            <button
+                className="button-54"
+                type='button'
+                style={{display: 'inline', position: 'relative', top: '-35px', left: '65px'}}
+                onClick={(event) => navigate('/')}
+            >
+                Log out
+            </button>
         </div>
     )
 }
