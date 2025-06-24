@@ -1,17 +1,16 @@
-import '../css/Stats.css'
+import '../css/Stats.css';
+import Categorized from './stats/Categorized';
+import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
+
 import { useState } from 'react';
+import { Chart, ArcElement, Legend, Tooltip, plugins } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
 function Stats() {
 
     const [trigger, setTrigger] = useState(0)
-
-    function getTransactionsSynch() {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", process.env.REACT_APP_BACKEND_URL + '/transaction', false);
-        xhr.setRequestHeader('mode', 'no-cors');
-        xhr.send(null);
-        return JSON.parse(xhr.responseText)
-    }
+    const [toogle, setToggle] = useState([false, false, false, false, false, false, false, false]);
+    const [toogleCategorized, setToggleCategorized] = useState(true);
 
     function parseTransactions(transactions) {
         if (transactions !== undefined) {
@@ -48,35 +47,10 @@ function Stats() {
         }
     }
 
-    function getStatsSynch()
-    {
-        let stats = {};
-
-        let xhr0 = new XMLHttpRequest();
-        xhr0.open("GET", process.env.REACT_APP_BACKEND_URL + '/stat', false);
-        xhr0.setRequestHeader('mode', 'no-cors');
-        xhr0.send(null);
-        stats.stat = JSON.parse(xhr0.responseText)
-
-        let xhr1 = new XMLHttpRequest();
-        xhr1.open("GET", process.env.REACT_APP_BACKEND_URL + '/stat/month', false);
-        xhr1.setRequestHeader('mode', 'no-cors');
-        xhr1.send(null);
-        stats.statMonth = JSON.parse(xhr1.responseText)
-
-        let xhr2 = new XMLHttpRequest();
-        xhr2.open("GET", process.env.REACT_APP_BACKEND_URL + '/stat/categorized', false);
-        xhr2.setRequestHeader('mode', 'no-cors');
-        xhr2.send(null);
-        stats.statCategorized = JSON.parse(xhr2.responseText)
-
-        let xhr3 = new XMLHttpRequest();
-        xhr3.open("GET", process.env.REACT_APP_BACKEND_URL + '/stat/avarage', false);
-        xhr3.setRequestHeader('mode', 'no-cors');
-        xhr3.send(null);
-        stats.statAvarage = JSON.parse(xhr3.responseText)
-
-        return stats;
+    function toogleMonthlyCategorized(event) {
+      const toogleCopy = toogle.slice(0)
+      toogleCopy[event.target.parentNode.rowIndex-1] = !toogle[event.target.parentNode.rowIndex-1]
+      setToggle(toogleCopy)
     }
 
     function parseStats(stats)
@@ -113,24 +87,26 @@ function Stats() {
 
           statsPerMonth.push(
             <>
-              <tr key={i}>
+              <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
                 <td>{stats.statMonth[i].monthName}</td>
                 <td>{stats.statMonth[i].income.toFixed(2)}</td>
                 <td>{stats.statMonth[i].expenses.toFixed(2)}</td>
                 <td>{stats.statMonth[i].balance.toFixed(2)}</td>
                 <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
               </tr>
-              <tr>
-                <td colSpan={5} style={{ paddingLeft: "0px", paddingRight: "0px", paddingBottom: "0px", paddingTop: "0px"}}>
-                  <table className="sub-table" style={{ width: "100%"}}>
-                    <tr className="sub-table">
-                      <th className="sub-table" style={{ borderRight: "solid black 1px"}}>Category</th>
-                      <th className="sub-table">Expenses</th>
-                    </tr>
-                    <tbody>{categorizedMonthly}</tbody>
-                  </table>
-                </td>
-              </tr>
+              {toogle[i] &&
+                (<tr>
+                  <td colSpan={5} style={{ paddingLeft: "0px", paddingRight: "0px", paddingBottom: "0px", paddingTop: "0px"}}>
+                    <table className="sub-table" style={{ width: "100%"}}>
+                      <tr className="sub-table">
+                        <th className="sub-table" style={{ borderRight: "solid black 1px"}}>Category</th>
+                        <th className="sub-table">Expenses</th>
+                      </tr>
+                      <tbody>{categorizedMonthly}</tbody>
+                    </table>
+                  </td>
+                </tr>)
+              }
             </>
           )
         }
@@ -208,13 +184,42 @@ function Stats() {
       setTrigger(trigger + 1)
     }
 
-    var parsedTransaction = parseTransactions(getTransactionsSynch())
-    let parsedStats = parseStats(getStatsSynch())
-    var statsOverall = parsedStats[0]
-    var statsPerMonth = parsedStats[1]
-    var statsPerCategory = parsedStats[2]
-    var statsAvarage = parsedStats[3]
-    
+    const parsedTransaction = parseTransactions(getTransactionsSynch())
+    const stats = getStatsSynch()
+    const parsedStats = parseStats(stats)
+    const statsOverall = parsedStats[0]
+    const statsAvarage = parsedStats[3]    
+    const statsPerMonth = parsedStats[1]
+    const statsPerCategory = parsedStats[2]
+
+    Chart.register(ArcElement, Legend, Tooltip);
+    const pieData = {     
+      labels: stats.statCategorized.map(categoryItem => categoryItem.category),
+      datasets: [
+        {
+          data: stats.statCategorized.map(categoryItem => categoryItem.expense.toFixed(2)),
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+          ],      
+        },
+      ],
+    };
+    const pieOptions = {
+      plugins: {
+        legend: {
+          position: 'left',
+          labels: {
+            boxWidth: 20
+          }
+        }
+      }   
+    }
+
     return (
       <div className='container'>
         <div className="item-all">
@@ -274,14 +279,11 @@ function Stats() {
           </table>
         </div>
         <div className="item-categorized">
-          <table>
-            <tr>
-              <th>Category</th>
-              <th>Expenses</th>
-            </tr>
-            <tbody>{statsPerCategory}</tbody>
-          </table>
+          {toogleCategorized ? <Categorized stPerCt={statsPerCategory}/> : <Pie data={pieData} options={pieOptions}/>}
         </div>
+        <div>
+            <button onClick={() => setToggleCategorized(!toogleCategorized)}>Click here</button>
+        </div>        
       </div>
     );
 }
