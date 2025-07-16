@@ -1,44 +1,57 @@
 import '../css/Stats.css';
+import Overall from './stats/Overall';
 import Categorized from './stats/Categorized';
+import Avarage from './stats/Avarage';
+import Monthly from './stats/Monthly';
 import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
+import Header from './bootstrap/Header';
 
 import { useState } from 'react';
-import { Chart, ArcElement, Legend, Tooltip, plugins } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import {
+  Chart,
+  ArcElement,
+  Legend,
+  Tooltip,
+  CategoryScale,
+  LinearScale,
+  BarElement
+} from 'chart.js';
+import { Pie, Bar } from 'react-chartjs-2';
+import Container from 'react-bootstrap/Container';
 
 function Stats() {
 
     const [trigger, setTrigger] = useState(0)
     const [toogle, setToggle] = useState([false, false, false, false, false, false, false, false]);
-    const [toogleCategorized, setToggleCategorized] = useState(true);
 
     function parseTransactions(transactions) {
         if (transactions !== undefined) {
+            const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
             const transactionsItems = []
             for (let i = 0; i < transactions.length; i++) {
                 if (transactions[i].usedForCalculation === false)
                   transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)} style={{ backgroundColor: "blueviolet"}}>
                       <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
                       <td style={{textAlign: 'center'}}>{transactions[i].amount}</td>
-                      <td>{transactions[i].sender}</td>
-                      <td>{transactions[i].receiver}</td>
-                      <td>{transactions[i].description}</td>
                       <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                      <td>{transactions[i].description}</td>
                       <td>{transactions[i].additional_info}</td>
                       <td>{transactions[i].additional_info_2}</td>
+                      <td>{transactions[i].sender}</td>
+                      <td>{transactions[i].receiver}</td>
+                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
                     </tr>);
                 else {
                   transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)}>
                       <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                      <td style={{textAlign: 'center'}}>{transactions[i].amount}</td>
-                      <td>{transactions[i].sender}</td>
-                      <td>{transactions[i].receiver}</td>
-                      <td>{transactions[i].description}</td>
+                      <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
                       <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                      <td>{transactions[i].description}</td>
                       <td>{transactions[i].additional_info}</td>
                       <td>{transactions[i].additional_info_2}</td>
+                      <td>{transactions[i].sender}</td>
+                      <td>{transactions[i].receiver}</td>
+                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
                     </tr>);
                 }
             }
@@ -60,14 +73,16 @@ function Stats() {
           (stats.statCategorized !== undefined) &&
           (stats.statAvarage !== undefined))
       {
+        const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
+
         const statsOverall = []
         for (let i = 0; i < stats.stat.length; i++) {
           statsOverall.push(<tr>
             <td>{stats.stat[i].from_date.substr(0, 10)}</td>
             <td>{stats.stat[i].to.substr(0, 10)}</td>
-            <td>{stats.stat[i].income.toFixed(2)}</td>
-            <td>{stats.stat[i].expenses.toFixed(2)}</td>
-            <td>{stats.stat[i].periodBalance.toFixed(2)}</td>
+            <td>{plnFormatter.format(stats.stat[i].income.toFixed(2))}</td>
+            <td>{plnFormatter.format(-1*stats.stat[i].expenses.toFixed(2))}</td>
+            <td>{plnFormatter.format(stats.stat[i].periodBalance.toFixed(2))}</td>
             <td>{stats.stat[i].viewName}</td>
           </tr>)
         }
@@ -89,9 +104,9 @@ function Stats() {
             <>
               <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
                 <td>{stats.statMonth[i].monthName}</td>
-                <td>{stats.statMonth[i].income.toFixed(2)}</td>
-                <td>{stats.statMonth[i].expenses.toFixed(2)}</td>
-                <td>{stats.statMonth[i].balance.toFixed(2)}</td>
+                <td>{plnFormatter.format(stats.statMonth[i].income.toFixed(2))}</td>
+                <td>{plnFormatter.format(-1*stats.statMonth[i].expenses.toFixed(2))}</td>
+                <td>{plnFormatter.format(stats.statMonth[i].balance.toFixed(2))}</td>
                 <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
               </tr>
               {toogle[i] &&
@@ -115,15 +130,15 @@ function Stats() {
         for (let i = 0; i < stats.statCategorized.length; i++) {
           statsPerCategory.push(<tr key={i}>
               <td>{stats.statCategorized[i].category}</td>
-              <td>{stats.statCategorized[i].expense.toFixed(2)}</td>
+              <td>{plnFormatter.format(-1*stats.statCategorized[i].expense.toFixed(2))}</td>
             </tr>)
         }
 
-        const statsAvarage = []
+        const statsAvarage = []        
         statsAvarage.push(<tr>
-            <td>{stats.statAvarage.avarageIncome.toFixed(2)}</td>
-            <td>{stats.statAvarage.avarageExpenses.toFixed(2)}</td>
-            <td>{stats.statAvarage.avarageBalance.toFixed(2)}</td>
+            <td>{plnFormatter.format(stats.statAvarage.avarageIncome.toFixed(2))}</td>
+            <td>{plnFormatter.format(-1*stats.statAvarage.avarageExpenses.toFixed(2))}</td>
+            <td>{plnFormatter.format(stats.statAvarage.avarageBalance.toFixed(2))}</td>
           </tr>)
 
         return [statsOverall, statsPerMonth, statsPerCategory, statsAvarage]
@@ -192,24 +207,62 @@ function Stats() {
     const statsPerMonth = parsedStats[1]
     const statsPerCategory = parsedStats[2]
 
-    Chart.register(ArcElement, Legend, Tooltip);
+    Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement);
+
+    const overallBarData = {
+      labels: ['Stat'],
+      datasets: [
+        {
+          label: 'Income',
+          data: [stats.stat[0].income.toFixed(2)],
+          backgroundColor: 'rgb(75, 192, 192)',
+        },
+        {
+          label: 'Expenses',
+          data: [-1*stats.stat[0].expenses.toFixed(2)],
+          backgroundColor: 'rgb(255, 99, 132)',
+        },
+        {
+          label: 'Savings',
+          data: [stats.stat[0].periodBalance.toFixed(2)],
+          backgroundColor: 'rgb(53, 162, 235)',
+        },
+      ],
+    };
+
+    const overallBarOptions = {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+    };
+
     const pieData = {     
       labels: stats.statCategorized.map(categoryItem => categoryItem.category),
       datasets: [
         {
           data: stats.statCategorized.map(categoryItem => categoryItem.expense.toFixed(2)),
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-          ],      
+            'rgb(255, 99, 132)',
+            'rgb(75, 192, 192)',
+            'rgb(53, 162, 235)',
+            'rgb(255, 206, 86)',
+            'rgb(153, 102, 255)',
+            'rgb(255, 159, 64)',
+            'brown',
+            'violet',
+            'lightgreen',
+          ],
         },
       ],
     };
     const pieOptions = {
+      canvas: {
+        style: {
+          width: "100px",
+        }
+      },
       plugins: {
         legend: {
           position: 'left',
@@ -217,74 +270,112 @@ function Stats() {
             boxWidth: 20
           }
         }
-      }   
+      },
+      aspectRatio: 1.3
     }
 
+    const labels = stats.statMonth.map(monthItem => monthItem.monthName);
+    const barData = {
+      labels,
+      datasets: [
+        {
+          label: 'Income',
+          data: stats.statMonth.map(monthItem => monthItem.income.toFixed(2)),
+          backgroundColor: 'rgb(75, 192, 192)',
+          stack: 'Stack 0',
+        },
+        {
+          label: 'Expenses',
+          data: stats.statMonth.map(monthItem => -1*monthItem.expenses.toFixed(2)),
+          backgroundColor: 'rgb(255, 99, 132)',
+          stack: 'Stack 1',
+        },
+        {
+          label: 'Savings',
+          data: stats.statMonth.map(monthItem => monthItem.balance.toFixed(2)),
+          backgroundColor: 'rgb(53, 162, 235)',
+          stack: 'Stack 2',
+        },
+      ],
+    };
+
+    const barOptions = {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          stacked: true,
+        },
+      },
+      aspectRatio: 1.2
+    };
+
     return (
-      <div className='container'>
-        <div className="item-all">
-          <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...' style={{ marginRight: "15px" }}/>
-          <input type='text' id='view-name-input' placeholder='Enter view name...' style={{ marginRight: "15px" }}/>
-          <button onClick={calculateView}>Calculate View</button>
-          <br></br>
-          <br></br>
-          <table id="transactions-table" style={{ fontSize: "12px"}}>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Amount</th>
-              <th>Sender</th>
-              <th>Receiver</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Additional info 1</th>
-              <th>Additional info 2</th>
-            </tr>
-            <tbody>{parsedTransaction}</tbody>
-          </table>
-        </div>
-        <div className="item-period">
-          <table>
-            <tr>
-              <th>From</th>
-              <th>To</th>
-              <th>Income</th>
-              <th>Expenses</th>
-              <th>Balance</th>
-              <th>View name</th>
-            </tr>
-            <tbody>{statsOverall}</tbody>
-          </table>
-        </div>
-        <div className="item-avarage">
-          <table>
-            <tr>
-              <th>Avg. Income</th>
-              <th>Avg. Expense</th>
-              <th>Avg. Savings</th>
-            </tr>
-            <tbody>{statsAvarage}</tbody>
-          </table>
-        </div>
-        <div className="item-monthly">
-          <table>
-            <tr>
-              <th>Month</th>
-              <th>Income</th>
-              <th>Expenses</th>
-              <th>Balance</th>
-              <th>Stopa zwrotu</th>
-            </tr>
-            <tbody>{statsPerMonth}</tbody>
-          </table>
-        </div>
-        <div className="item-categorized">
-          {toogleCategorized ? <Categorized stPerCt={statsPerCategory}/> : <Pie data={pieData} options={pieOptions}/>}
-        </div>
-        <div>
-            <button onClick={() => setToggleCategorized(!toogleCategorized)}>Click here</button>
-        </div>        
-      </div>
+      <>
+      <Header />
+        <Container className='containe mt-4 mw-100 small'>
+          <div className='row me-1 ms-1'>
+            <div className='col'>
+              <div className='row border shadow-sm mb-3 pt-2'>
+                <div className='col'>
+                  <Overall stOverall={statsOverall}/>
+                </div>
+                <div className='col'>
+                  <Bar data={overallBarData} options={overallBarOptions}/>
+                </div>                
+              </div>
+              <div className='row border shadow-sm mb-3 pt-2'>
+                <div className='col pb-2'>
+                  <Categorized stPerCt={statsPerCategory}/>
+                </div>
+                <div className='col pb-2'>
+                  <Pie data={pieData} options={pieOptions}/>
+                </div>
+              </div>
+              <div className='row border shadow-sm mb-3 pt-2'>
+                <div className='col'>
+                  <Monthly stPerMonth={statsPerMonth}/>
+                </div>
+                <div className='col'>
+                  <Bar data={barData} options={barOptions}/>
+                </div>
+              </div>
+              <div className='row border shadow-sm pt-2'>
+                <div className='col'>
+                  <Avarage stAvarage={statsAvarage}/>
+                </div>
+              </div>
+            </div>
+            <div className='col overflow-scroll'>
+              <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...' className="me-3"/>
+              <input type='text' id='view-name-input' placeholder='Enter view name...' className="me-3"/>
+              <button onClick={calculateView} className="mb-3 btn btn-primary">Calculate View</button>
+              <table id="transactions-table" className="table table-striped table-bordered table-hover table-sm">
+                <thead class="table-primary">
+                  <tr>
+                    <th>Date</th>                    
+                    <th>Amount</th>
+                    <th>Category</th>                    
+                    <th>Description</th>
+                    <th>Additional info 1</th>
+                    <th>Additional info 2</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>{parsedTransaction}</tbody>
+              </table>
+            </div>
+          </div>            
+        </Container>
+      </>
     );
 }
 
