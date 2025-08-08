@@ -2,7 +2,7 @@ function Monthly({stPerMonth}) {
 
     return (
         <table className="table table-striped table-bordered table-hover table-sm">
-            <thead class="table-primary">
+            <thead className="table-primary">
                 <tr>
                     <th>Month</th>
                     <th>Income</th>

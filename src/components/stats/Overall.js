@@ -2,7 +2,7 @@ function Overall({stOverall}) {
 
     return(
         <table className="table table-sm">
-            <thead class="table-primary">
+            <thead className="table-primary">
                 <tr>
                     <th>From</th>
                     <th>To</th>

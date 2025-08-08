@@ -1,64 +1,46 @@
-import '../css/Stats.css';
+import Header from './bootstrap/Header';
 import Overall from './stats/Overall';
 import Categorized from './stats/Categorized';
-import Avarage from './stats/Avarage';
 import Monthly from './stats/Monthly';
+import Avarage from './stats/Avarage';
 import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
-import Header from './bootstrap/Header';
-
-import { useState } from 'react';
+import {
+  parseTransactions,
+  parseCategorizedStats,
+  parseAvarageStats,
+  parseOverallStats,
+  mapCategories
+} from '../utils/parse';
+import { useState, useRef, useEffect } from 'react';
 import {
   Chart,
-  ArcElement,
   Legend,
   Tooltip,
   CategoryScale,
   LinearScale,
-  BarElement
+  BarElement,
+  ArcElement,
+  Title
 } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
 import Container from 'react-bootstrap/Container';
 
-function Stats() {
-
+function Stats()
+{
     const [trigger, setTrigger] = useState(0)
-    const [toogle, setToggle] = useState([false, false, false, false, false, false, false, false]);
+    const [toogle, setToggle] = useState([]);
+    const transactionsTableRef = useRef(null);
+    const transactionColRef = useRef(null);
+    const statsColRef = useRef(null);
 
-    function parseTransactions(transactions) {
-        if (transactions !== undefined) {
-            const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
-            const transactionsItems = []
-            for (let i = 0; i < transactions.length; i++) {
-                if (transactions[i].usedForCalculation === false)
-                  transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)} style={{ backgroundColor: "blueviolet"}}>
-                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                      <td style={{textAlign: 'center'}}>{transactions[i].amount}</td>
-                      <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
-                      <td>{transactions[i].description}</td>
-                      <td>{transactions[i].additional_info}</td>
-                      <td>{transactions[i].additional_info_2}</td>
-                      <td>{transactions[i].sender}</td>
-                      <td>{transactions[i].receiver}</td>
-                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                    </tr>);
-                else {
-                  transactionsItems.push(<tr key={i} onClick={(event) => excludeRow(event)}>
-                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                      <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
-                      <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
-                      <td>{transactions[i].description}</td>
-                      <td>{transactions[i].additional_info}</td>
-                      <td>{transactions[i].additional_info_2}</td>
-                      <td>{transactions[i].sender}</td>
-                      <td>{transactions[i].receiver}</td>
-                      <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                    </tr>);
-                }
-            }
+    useEffect(() => {
+      transactionColRef.current.style.height = statsColRef.current.offsetHeight.toString() + 'px';
 
-            return transactionsItems;
-        }
-    }
+      const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
+      for(const transactionRow of transactionRows) {
+        transactionRow.addEventListener("click", (event) => excludeRow(event))
+      }
+    })
 
     function toogleMonthlyCategorized(event) {
       const toogleCopy = toogle.slice(0)
@@ -66,84 +48,64 @@ function Stats() {
       setToggle(toogleCopy)
     }
 
-    function parseStats(stats)
-    {
-      if ((stats.stat !== undefined) &&
-          (stats.statMonth !== undefined) &&
-          (stats.statCategorized !== undefined) &&
-          (stats.statAvarage !== undefined))
+  function parseMonthlyStats(monthlyStats)
+  {
+      const monthlyStatsTBody = []
+      if (monthlyStats !== undefined)
       {
-        const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
+          const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
 
-        const statsOverall = []
-        for (let i = 0; i < stats.stat.length; i++) {
-          statsOverall.push(<tr>
-            <td>{stats.stat[i].from_date.substr(0, 10)}</td>
-            <td>{stats.stat[i].to.substr(0, 10)}</td>
-            <td>{plnFormatter.format(stats.stat[i].income.toFixed(2))}</td>
-            <td>{plnFormatter.format(-1*stats.stat[i].expenses.toFixed(2))}</td>
-            <td>{plnFormatter.format(stats.stat[i].periodBalance.toFixed(2))}</td>
-            <td>{stats.stat[i].viewName}</td>
-          </tr>)
-        }
-        
+          if (toogle.length === 0) {
+              const initialToogle = [];
+              for(let i = 0; i < monthlyStats.length; i++) {
+                  initialToogle[i] = false;
+              }
+              setToggle(initialToogle);
+          }
 
-        const statsPerMonth = []
-        for (let i = 0; i < stats.statMonth.length; i++) {
-          var categorizedMonthly = []
-          for (let j = 0; j < stats.statMonth[i].categorizedMonthly.length; j++) {
-              categorizedMonthly.push(
-                  <tr key={j} className="sub-table">
-                    <td style={{ borderLeft: "0px", borderBottom: "0px"}}>{stats.statMonth[i].categorizedMonthly[j].category}</td>
-                    <td style={{ borderRight: "0px", borderBottom: "0px"}}>{stats.statMonth[i].categorizedMonthly[j].expense.toFixed(2)}</td>
+          for (let i = 0; i < monthlyStats.length; i++) {
+              var categorizedMonthly = []
+              for (let j = 0; j < monthlyStats[i].categorizedMonthly.length; j++) {
+                  const mappedCategories = monthlyStats[i].categorizedMonthly.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
+                  categorizedMonthly.push(
+                      <tr key={j}>
+                          <td>{mappedCategories[j]}</td>
+                          <td>{plnFormatter.format(-1*monthlyStats[i].categorizedMonthly[j].expense.toFixed(2))}</td>
+                      </tr>
+                  )
+              }
+
+              monthlyStatsTBody.push(
+              <>
+                  <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
+                      <td>{monthlyStats[i].monthName}</td>
+                      <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
+                      <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>
+                      <td>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</td>
+                      <td>{monthlyStats[i].rateOfReturn.toFixed(0)} %</td>
                   </tr>
+                  {toogle[i] &&
+                  (<tr>
+                      <td colSpan={5} style={{ padding: "0px"}}>
+                          <table className="table table-sm">
+                              <thead className='table-info'>
+                                  <tr>
+                                      <th>Category</th>
+                                      <th>Expenses</th>
+                                  </tr>
+                              </thead>
+                              <tbody>{categorizedMonthly}</tbody>
+                          </table>
+                      </td>
+                  </tr>)
+                  }
+              </>
               )
           }
 
-          statsPerMonth.push(
-            <>
-              <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
-                <td>{stats.statMonth[i].monthName}</td>
-                <td>{plnFormatter.format(stats.statMonth[i].income.toFixed(2))}</td>
-                <td>{plnFormatter.format(-1*stats.statMonth[i].expenses.toFixed(2))}</td>
-                <td>{plnFormatter.format(stats.statMonth[i].balance.toFixed(2))}</td>
-                <td>{stats.statMonth[i].rateOfReturn.toFixed(0)} %</td>
-              </tr>
-              {toogle[i] &&
-                (<tr>
-                  <td colSpan={5} style={{ paddingLeft: "0px", paddingRight: "0px", paddingBottom: "0px", paddingTop: "0px"}}>
-                    <table className="sub-table" style={{ width: "100%"}}>
-                      <tr className="sub-table">
-                        <th className="sub-table" style={{ borderRight: "solid black 1px"}}>Category</th>
-                        <th className="sub-table">Expenses</th>
-                      </tr>
-                      <tbody>{categorizedMonthly}</tbody>
-                    </table>
-                  </td>
-                </tr>)
-              }
-            </>
-          )
-        }
-
-        const statsPerCategory = []
-        for (let i = 0; i < stats.statCategorized.length; i++) {
-          statsPerCategory.push(<tr key={i}>
-              <td>{stats.statCategorized[i].category}</td>
-              <td>{plnFormatter.format(-1*stats.statCategorized[i].expense.toFixed(2))}</td>
-            </tr>)
-        }
-
-        const statsAvarage = []        
-        statsAvarage.push(<tr>
-            <td>{plnFormatter.format(stats.statAvarage.avarageIncome.toFixed(2))}</td>
-            <td>{plnFormatter.format(-1*stats.statAvarage.avarageExpenses.toFixed(2))}</td>
-            <td>{plnFormatter.format(stats.statAvarage.avarageBalance.toFixed(2))}</td>
-          </tr>)
-
-        return [statsOverall, statsPerMonth, statsPerCategory, statsAvarage]
+          return monthlyStatsTBody;
       }
-    }
+  }
 
     var visibleRows = []
     function filterTable() {
@@ -199,15 +161,14 @@ function Stats() {
       setTrigger(trigger + 1)
     }
 
-    const parsedTransaction = parseTransactions(getTransactionsSynch())
+    const parsedTransactions = parseTransactions(getTransactionsSynch())
     const stats = getStatsSynch()
-    const parsedStats = parseStats(stats)
-    const statsOverall = parsedStats[0]
-    const statsAvarage = parsedStats[3]    
-    const statsPerMonth = parsedStats[1]
-    const statsPerCategory = parsedStats[2]
+    const statsPerMonth = parseMonthlyStats(stats.statMonth)
+    const statsOverall = parseOverallStats(stats.stat)
+    const statsAvarage = parseAvarageStats(stats.statAvarage)
+    const statsPerCategory = parseCategorizedStats(stats.statCategorized)
 
-    Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement);
+    Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, Title);
 
     const overallBarData = {
       labels: ['Stat'],
@@ -237,6 +198,31 @@ function Stats() {
         intersect: false,
       },
     };
+
+    const categorizedBarOptions = {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Horizontal Bar Chart',
+        },
+      },
+    }
+    const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category);
+    const categorizedBarData = {
+      labels: categorizedBarLabels,
+      datasets: [
+        {
+          label: 'Dataset 1',
+          data: stats.statCategorized.map(categoryItem => -1*categoryItem.expense.toFixed(2)),
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+      ]
+    }
 
     const pieData = {     
       labels: stats.statCategorized.map(categoryItem => categoryItem.category),
@@ -319,62 +305,62 @@ function Stats() {
     return (
       <>
       <Header />
-        <Container className='containe mt-4 mw-100 small'>
-          <div className='row me-1 ms-1'>
-            <div className='col'>
-              <div className='row border shadow-sm mb-3 pt-2'>
-                <div className='col'>
-                  <Overall stOverall={statsOverall}/>
-                </div>
-                <div className='col'>
-                  <Bar data={overallBarData} options={overallBarOptions}/>
-                </div>                
+      <Container className='containe mt-4 mw-100 small'>
+        <div className='row me-1 ms-1'>
+          <div className='col' ref={statsColRef}>
+            <div className='row border shadow-sm mb-3 pt-2'>
+              <Overall stOverall={statsOverall}/>
+              <Bar data={overallBarData} options={overallBarOptions}/>
+            </div>
+            <div className='row border shadow-sm mb-3 pt-2'>
+              <div className='col pb-2'>
+                <Categorized stPerCt={statsPerCategory}/>
               </div>
-              <div className='row border shadow-sm mb-3 pt-2'>
-                <div className='col pb-2'>
-                  <Categorized stPerCt={statsPerCategory}/>
-                </div>
-                <div className='col pb-2'>
-                  <Pie data={pieData} options={pieOptions}/>
-                </div>
-              </div>
-              <div className='row border shadow-sm mb-3 pt-2'>
-                <div className='col'>
-                  <Monthly stPerMonth={statsPerMonth}/>
-                </div>
-                <div className='col'>
-                  <Bar data={barData} options={barOptions}/>
-                </div>
-              </div>
-              <div className='row border shadow-sm pt-2'>
-                <div className='col'>
-                  <Avarage stAvarage={statsAvarage}/>
-                </div>
+              <div className='col pb-2'>
+                <Bar data={categorizedBarData} options={categorizedBarOptions}/>
               </div>
             </div>
-            <div className='col overflow-scroll'>
-              <input type='text' id='table-search-input' onKeyUp={filterTable} placeholder='Search...' className="me-3"/>
-              <input type='text' id='view-name-input' placeholder='Enter view name...' className="me-3"/>
-              <button onClick={calculateView} className="mb-3 btn btn-primary">Calculate View</button>
-              <table id="transactions-table" className="table table-striped table-bordered table-hover table-sm">
-                <thead class="table-primary">
-                  <tr>
-                    <th>Date</th>                    
-                    <th>Amount</th>
-                    <th>Category</th>                    
-                    <th>Description</th>
-                    <th>Additional info 1</th>
-                    <th>Additional info 2</th>
-                    <th>Sender</th>
-                    <th>Receiver</th>
-                    <th>Type</th>
-                  </tr>
-                </thead>
-                <tbody>{parsedTransaction}</tbody>
-              </table>
+            <div className='row border shadow-sm mb-3 pt-2'>
+                <Monthly stPerMonth={statsPerMonth}/>
+                <Bar data={barData} options={barOptions}/>
             </div>
-          </div>            
-        </Container>
+            <div className='row border shadow-sm pt-2'>
+                <Avarage stAvarage={statsAvarage}/>
+            </div>
+          </div>
+          <div className='col overflow-scroll border shadow-sm ms-2' ref={transactionColRef}>
+            <div className='row mt-3 mb-3'>
+              <div className='col'>
+                <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTable} placeholder='Search...'/>
+              </div>
+              <div className='col'>
+                <input type='text' className="form-control" id='view-name-input' placeholder='Enter view name...'/>
+              </div>
+              <div className='col'>
+                <button onClick={calculateView} className="btn btn-primary">Calculate View</button>
+              </div>
+            </div>
+            <table id="transactions-table" className="table table-striped table-bordered table-hover table-sm">
+              <thead className="table-primary">
+                <tr>
+                  <th>Date</th>                    
+                  <th>Amount</th>
+                  <th>Category</th>                    
+                  <th>Description</th>
+                  <th>Additional info 1</th>
+                  <th>Additional info 2</th>
+                  <th>Sender</th>
+                  <th>Receiver</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody ref={transactionsTableRef}>
+                {parsedTransactions}
+              </tbody>
+            </table>
+          </div>
+        </div>            
+      </Container>
       </>
     );
 }

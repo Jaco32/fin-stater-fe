@@ -2,7 +2,7 @@ function Categorized({stPerCt}) {
 
     return (
         <table className="table table-striped table-sm">
-            <thead class="table-primary">
+            <thead className="table-primary">
                 <tr>
                     <th>Category</th>
                     <th>Expenses</th>
