@@ -1,11 +1,13 @@
 function Categorized({stPerCt}) {
 
     return (
-        <table>
-            <tr>
-                <th>Category</th>
-                <th>Expenses</th>
-            </tr>
+        <table className="table table-striped table-sm">
+            <thead className="table-primary">
+                <tr>
+                    <th>Category</th>
+                    <th>Expenses</th>
+                </tr>
+            </thead>
             <tbody>{stPerCt}</tbody>
         </table>
     )

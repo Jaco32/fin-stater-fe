@@ -1,8 +1,8 @@
-import '../App.css'
-import '../css/SignUp.css';
+import '../../css/SignUp.css';
+import Header from './Header';
 import { useNavigate } from "react-router-dom";
 
-function TransactionsFileUpload() {
+function UploadTransactions() {
     const navigate = useNavigate();
 
     function handleFileUpload() {
@@ -24,19 +24,23 @@ function TransactionsFileUpload() {
     }
 
     return (
-        <div className='App'>
-            <label className='label'>
+        <>
+            <Header />
+            <h1 className='display-2 mt-5' style={{textAlign: 'center'}}>Welcome to FinStat</h1>
+            <h2 className='display-6' style={{textAlign: 'center'}}>Start with uploading a file with transactions using the form below</h2>
+            <div className='input-group w-25 mx-auto mt-5'>
                 <input
                     type='file'
                     onChange={handleFileUpload}
                     id='id-transactions-file-upload'
                     accept=".xlsx,.csv"
                     required
+                    className='form-control'
                 />
-                <span className='button-54'>Upload file</span>
-            </label>
-        </div>
+                <label className='input-group-text bg-primary text-white' for='id-transactions-file-upload'>Upload</label>
+            </div>
+        </>
     )
 }
 
-export default TransactionsFileUpload;
+export default UploadTransactions;
