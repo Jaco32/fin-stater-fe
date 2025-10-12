@@ -22,7 +22,7 @@ import {
   ArcElement,
   Title
 } from 'chart.js';
-import { Pie, Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import Container from 'react-bootstrap/Container';
 
 function Stats()
@@ -110,24 +110,21 @@ function Stats()
     var visibleRows = []
     function filterTable() {
       visibleRows = []
-      var filter = document.getElementById("table-search-input").value.toUpperCase()
-      var table = document.getElementById("transactions-table");
-      var tr = table.getElementsByTagName("tr");
+      const filter = document.getElementById("table-search-input").value.toUpperCase()
+      const table = document.getElementById("transactions-table");
+      const tr = table.getElementsByTagName("tr");
     
-      for (let i = 0; i < tr.length; i++) {
-        let td_type = tr[i].getElementsByTagName("td")[1];
-        let td_category = tr[i].getElementsByTagName("td")[6];
-        let td_info_1 = tr[i].getElementsByTagName("td")[7];
-        let td_info_2 = tr[i].getElementsByTagName("td")[8];
+      for (let i = 1; i < tr.length; i++) {
+        const td_category = tr[i].getElementsByTagName("td")[2];
+        const td_info_1 = tr[i].getElementsByTagName("td")[4];
+        const td_info_2 = tr[i].getElementsByTagName("td")[5];
 
-        if (td_type && td_category) {
-          let tdTypeValue = td_type.textContent || td_type.innerText;
-          let tdCategoryValue = td_category.textContent || td_category.innerText;
-          let tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
-          let tdInfo2Value = td_info_2.textContent || td_info_2.innerText;
+        if (td_category && td_info_1 && td_info_2) {
+          const tdCategoryValue = td_category.textContent || td_category.innerText;
+          const tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
+          const tdInfo2Value = td_info_2.textContent || td_info_2.innerText;
 
-          if ((tdTypeValue.toUpperCase().indexOf(filter) > -1) || 
-              (tdCategoryValue.toUpperCase().indexOf(filter) > -1) ||
+          if ((tdCategoryValue.toUpperCase().indexOf(filter) > -1) ||
               (tdInfo1Value.toUpperCase().indexOf(filter) > -1) ||
               (tdInfo2Value.toUpperCase().indexOf(filter) > -1))
           {
@@ -136,6 +133,49 @@ function Stats()
           } else {
             tr[i].style.display = "none";
           }
+        }
+      }
+    }
+
+    function filterTableByDate() {
+      const dateFrom = new Date(document.getElementById("table-search-date-from").value)
+      const dateTo = new Date(document.getElementById("table-search-date-to").value)
+      const table = document.getElementById("transactions-table");
+      const tr = table.getElementsByTagName("tr");
+      
+      visibleRows = []
+      for (let i = 1; i < tr.length; i++) {
+        const tdDate = new Date(tr[i].getElementsByTagName("td")[0].textContent);
+        if((tdDate >= dateFrom) && (tdDate <= dateTo)) {
+          tr[i].style.display = "";
+          visibleRows.push(i);
+        }
+        else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+
+    function filterTableByTransactionType() {
+      const allRadio = document.getElementById("radio-all").checked;
+      const incomeRadio = document.getElementById("radio-income").checked;
+      const expensesRadio = document.getElementById("radio-expenses").checked;
+
+      const table = document.getElementById("transactions-table");
+      const tr = table.getElementsByTagName("tr");
+      
+      visibleRows = []
+      for (let i = 1; i < tr.length; i++) {
+        const tdAmount = parseFloat(tr[i].getElementsByTagName("td")[1].textContent.split(' ')[0].replace(",", "."));
+        if(!allRadio) {
+          if(incomeRadio && (tdAmount > 0))
+          {
+            tr[i].style.display = "";
+            visibleRows.push(i);
+          }
+          else {
+            tr[i].style.display = "none";
+          }          
         }
       }
     }
@@ -339,6 +379,27 @@ function Stats()
               <div className='col'>
                 <button onClick={calculateView} className="btn btn-primary">Calculate View</button>
               </div>
+            </div>
+            <div className='row mt-3 mb-3'>
+              <div className='col'>
+                <input type="date" className='form-control' id="table-search-date-from"></input>
+              </div>
+              <div className='col'>
+                <input type="date" className='form-control' id="table-search-date-to"></input>
+              </div>
+              <div className='col'>
+                <button onClick={filterTableByDate} className="btn btn-primary">Go</button>
+              </div>
+            </div>
+            <div className='row mt-3 mb-3'>
+              <form>
+                <input type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
+                <label>All</label>
+                <input type="radio" name="tansaction-type-form" id="radio-income" onChange={filterTableByTransactionType}/>
+                <label>Income</label>
+                <input type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
+                <label>Expenses</label>                                
+              </form>
             </div>
             <table id="transactions-table" className="table table-striped table-bordered table-hover table-sm">
               <thead className="table-primary">

@@ -40,14 +40,16 @@ export function parseOverallStats(overallStats)
     if (overallStats !== undefined) {
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
         for (let i = 0; i < overallStats.length; i++) {
-            overallStatsTBody.push(<tr>
-                <td>{overallStats[i].from_date.substr(0, 10)}</td>
-                <td>{overallStats[i].to.substr(0, 10)}</td>
-                <td>{plnFormatter.format(overallStats[i].income.toFixed(2))}</td>
-                <td>{plnFormatter.format(-1*overallStats[i].expenses.toFixed(2))}</td>
-                <td>{plnFormatter.format(overallStats[i].periodBalance.toFixed(2))}</td>
-                <td>{overallStats[i].viewName}</td>
-            </tr>)
+            if(overallStats[i].from_date !== null) {
+                overallStatsTBody.push(<tr>
+                    <td>{overallStats[i].from_date.substr(0, 10)}</td>
+                    <td>{overallStats[i].to.substr(0, 10)}</td>
+                    <td>{plnFormatter.format(overallStats[i].income.toFixed(2))}</td>
+                    <td>{plnFormatter.format(-1*overallStats[i].expenses.toFixed(2))}</td>
+                    <td>{plnFormatter.format(overallStats[i].periodBalance.toFixed(2))}</td>
+                    <td>{overallStats[i].viewName}</td>
+                </tr>)
+            }
         }
     }
 
@@ -97,11 +99,13 @@ export function parseAvarageStats(avarageStats) {
     const avarageStatsTBody = [];
     if (avarageStats !== undefined) {
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
-        avarageStatsTBody.push(<tr>
-            <td>{plnFormatter.format(avarageStats.avarageIncome.toFixed(2))}</td>
-            <td>{plnFormatter.format(-1*avarageStats.avarageExpenses.toFixed(2))}</td>
-            <td>{plnFormatter.format(avarageStats.avarageBalance.toFixed(2))}</td>
-        </tr>)        
+        for(let i = 0; i < avarageStats.length; i++) {
+            avarageStatsTBody.push(<tr>
+                <td>{plnFormatter.format(avarageStats[i].avarageIncome.toFixed(2))}</td>
+                <td>{plnFormatter.format(-1*avarageStats[i].avarageExpenses.toFixed(2))}</td>
+                <td>{plnFormatter.format(avarageStats[i].avarageBalance.toFixed(2))}</td>
+            </tr>)
+        }
     }
 
     return avarageStatsTBody;
