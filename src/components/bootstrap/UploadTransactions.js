@@ -6,7 +6,7 @@ function UploadTransactions() {
     const navigate = useNavigate();
 
     function handleFileUpload() {
-        var file = document.getElementById('id-transactions-file-upload').files[0];
+        const file = document.getElementById('id-transactions-file-upload').files[0];
         let myPromise = file.arrayBuffer();
         myPromise.then(
             function(value) {

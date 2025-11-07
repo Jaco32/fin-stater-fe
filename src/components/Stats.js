@@ -27,7 +27,7 @@ import Container from 'react-bootstrap/Container';
 
 function Stats()
 {
-    const [trigger, setTrigger] = useState(0)
+    const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [toogle, setToggle] = useState([]);
     const transactionsTableRef = useRef(null);
     const transactionColRef = useRef(null);
@@ -38,7 +38,7 @@ function Stats()
 
       const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
       for(const transactionRow of transactionRows) {
-        transactionRow.addEventListener("click", (event) => excludeRow(event))
+        transactionRow.addEventListener("click", (event) => excludeTransactionFromStats(event))
       }
     })
 
@@ -184,7 +184,7 @@ function Stats()
         var viewName = document.getElementById('view-name-input').value;
         
         var xhr = new XMLHttpRequest();
-        xhr.open("PATCH", 'http://localhost:8080/stat/view/' + viewName, false);
+        xhr.open("PATCH", process.env.REACT_APP_BACKEND_URL + '/stat/view/' + viewName, false);
         xhr.setRequestHeader('mode', 'no-cors');
         xhr.setRequestHeader('Content-Type', 'text/plain');
         xhr.send(visibleRows.toString());
@@ -192,13 +192,13 @@ function Stats()
         window.location.assign("/stats")
     }
 
-    function excludeRow(event) {
+    function excludeTransactionFromStats(event) {
       let xhr = new XMLHttpRequest()
-      xhr.open('PATCH', 'http://localhost:8080/transaction/' + event.target.parentNode.rowIndex, false)
+      xhr.open('PATCH', process.env.REACT_APP_BACKEND_URL + '/transaction/toogleforstats/' + event.target.parentNode.rowIndex, false)
       xhr.setRequestHeader('mode', 'no-cors');
       xhr.send(null)
 
-      setTrigger(trigger + 1)
+      setTransactionExclusion(!transactionExclusionTrigger)
     }
 
     const parsedTransactions = parseTransactions(getTransactionsSynch())
@@ -406,7 +406,7 @@ function Stats()
                 <tr>
                   <th>Date</th>                    
                   <th>Amount</th>
-                  <th>Category</th>                    
+                  <th>Category</th>
                   <th>Description</th>
                   <th>Additional info 1</th>
                   <th>Additional info 2</th>

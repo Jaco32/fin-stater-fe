@@ -3,11 +3,11 @@ export function parseTransactions(transactions) {
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
         const transactionsItems = []
         for (let i = 0; i < transactions.length; i++) {
-            if (transactions[i].usedForCalculation === false)
-                transactionsItems.push(<tr key={i} style={{ backgroundColor: "blueviolet"}}>
+            if (transactions[i].usedForCalculation === false) {
+                transactionsItems.push(<tr key={i} className="table-danger">
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                    <td style={{textAlign: 'center'}}>{transactions[i].amount}</td>
-                    <td style={{textAlign: 'center'}}>{transactions[i].category}</td>
+                    <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
+                    <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
                     <td>{transactions[i].description}</td>
                     <td>{transactions[i].additional_info}</td>
                     <td>{transactions[i].additional_info_2}</td>
@@ -15,6 +15,7 @@ export function parseTransactions(transactions) {
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
                 </tr>);
+            }
             else {
                 transactionsItems.push(<tr key={i}>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
