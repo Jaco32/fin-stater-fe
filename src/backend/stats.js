@@ -1,13 +1,20 @@
 export function getTransactionsSynch() {
+    console.log("getTransactionsSynch - entered")
+
     let xhr = new XMLHttpRequest();
     xhr.open("GET", process.env.REACT_APP_BACKEND_URL + '/transaction', false);
     xhr.setRequestHeader('mode', 'no-cors');
     xhr.send(null);
+
+    console.log("getTransactionsSynch - exiting")
+
     return JSON.parse(xhr.responseText)
 }
 
 export function getStatsSynch()
 {
+    console.log("getStatsSynch - entered")
+
     let stats = {};
 
     let xhr0 = new XMLHttpRequest();
@@ -33,6 +40,8 @@ export function getStatsSynch()
     xhr3.setRequestHeader('mode', 'no-cors');
     xhr3.send(null);
     stats.statAvarage = JSON.parse(xhr3.responseText)
+
+    console.log("getStatsSynch - exiting")
 
     return stats;
 }

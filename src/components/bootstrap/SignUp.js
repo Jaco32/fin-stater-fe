@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
 
+    console.log("Rendering - SignUp")
+
     const navigate = useNavigate();
 
     function handleSignUp() {

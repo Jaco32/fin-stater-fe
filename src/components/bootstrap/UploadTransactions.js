@@ -3,6 +3,8 @@ import Header from './Header';
 import { useNavigate } from "react-router-dom";
 
 function UploadTransactions() {
+    console.log("Rendering - UploadTransactions")
+
     const navigate = useNavigate();
 
     function handleFileUpload() {

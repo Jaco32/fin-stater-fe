@@ -1,6 +1,7 @@
 import Header from './bootstrap/Header';
 
 function Main() {
+    console.log("Rendering - Main")
 
     return (
         <>

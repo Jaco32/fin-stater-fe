@@ -27,6 +27,8 @@ import Container from 'react-bootstrap/Container';
 
 function Stats()
 {
+    console.log("Rendering - Stats");
+
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [toogle, setToggle] = useState([]);
     const transactionsTableRef = useRef(null);
@@ -34,6 +36,7 @@ function Stats()
     const statsColRef = useRef(null);
 
     useEffect(() => {
+      console.log("Calling use effect");
       transactionColRef.current.style.height = statsColRef.current.offsetHeight.toString() + 'px';
 
       const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
@@ -193,6 +196,7 @@ function Stats()
     }
 
     function excludeTransactionFromStats(event) {
+      console.log("Sending '/transaction/toogleforstats/'")
       let xhr = new XMLHttpRequest()
       xhr.open('PATCH', process.env.REACT_APP_BACKEND_URL + '/transaction/toogleforstats/' + event.target.parentNode.rowIndex, false)
       xhr.setRequestHeader('mode', 'no-cors');
