@@ -111,7 +111,7 @@ function Stats()
   }
 
     var visibleRows = []
-    function filterTable() {
+    function filterTableByText() {
       visibleRows = []
       const filter = document.getElementById("table-search-input").value.toUpperCase()
       const table = document.getElementById("transactions-table");
@@ -163,23 +163,22 @@ function Stats()
       const allRadio = document.getElementById("radio-all").checked;
       const incomeRadio = document.getElementById("radio-income").checked;
       const expensesRadio = document.getElementById("radio-expenses").checked;
-
-      const table = document.getElementById("transactions-table");
-      const tr = table.getElementsByTagName("tr");
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
       
       visibleRows = []
       for (let i = 1; i < tr.length; i++) {
         const tdAmount = parseFloat(tr[i].getElementsByTagName("td")[1].textContent.split(' ')[0].replace(",", "."));
-        if(!allRadio) {
-          if(incomeRadio && (tdAmount > 0))
-          {
+        if (!allRadio)
+          if (incomeRadio && (tdAmount > 0)) {
             tr[i].style.display = "";
             visibleRows.push(i);
           }
-          else {
-            tr[i].style.display = "none";
-          }          
-        }
+          else if (expensesRadio && (tdAmount < 0)) {
+            tr[i].style.display = "";
+            visibleRows.push(i);
+          }
+          else tr[i].style.display = "none";
+        else tr[i].style.display = "";
       }
     }
 
@@ -375,7 +374,7 @@ function Stats()
           <div className='col overflow-scroll border shadow-sm ms-2' ref={transactionColRef}>
             <div className='row mt-3 mb-3'>
               <div className='col'>
-                <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTable} placeholder='Search...'/>
+                <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
               </div>
               <div className='col'>
                 <input type='text' className="form-control" id='view-name-input' placeholder='Enter view name...'/>
