@@ -31,6 +31,8 @@ function Stats()
 
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [toogle, setToggle] = useState([]);
+    const [firstRender, setFirstRender] = useState(true)
+
     const transactionsTableRef = useRef(null);
     const transactionColRef = useRef(null);
     const statsColRef = useRef(null);
@@ -39,9 +41,12 @@ function Stats()
       console.log("Calling use effect");
       transactionColRef.current.style.height = statsColRef.current.offsetHeight.toString() + 'px';
 
-      const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
-      for(const transactionRow of transactionRows) {
-        transactionRow.addEventListener("click", (event) => excludeTransactionFromStats(event))
+      if(firstRender) {
+        const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
+        for(const transactionRow of transactionRows) {
+          transactionRow.addEventListener("click", (event) => excludeTransactionFromStats(event))
+        }
+        setFirstRender((prev) => !prev)
       }
     })
 
@@ -195,13 +200,13 @@ function Stats()
     }
 
     function excludeTransactionFromStats(event) {
-      console.log("Sending '/transaction/toogleforstats/'")
+      console.log("Sending '/transaction/toogleforstats/" + event.target.parentNode.rowIndex + "'")
       let xhr = new XMLHttpRequest()
       xhr.open('PATCH', process.env.REACT_APP_BACKEND_URL + '/transaction/toogleforstats/' + event.target.parentNode.rowIndex, false)
       xhr.setRequestHeader('mode', 'no-cors');
       xhr.send(null)
 
-      setTransactionExclusion(!transactionExclusionTrigger)
+      setTransactionExclusion((prev) => !prev)
     }
 
     const parsedTransactions = parseTransactions(getTransactionsSynch())
@@ -350,7 +355,7 @@ function Stats()
       <Header />
       <Container className='containe mt-4 mw-100 small'>
         <div className='row me-1 ms-1'>
-          <div className='col' ref={statsColRef}>
+          <div className='col my-auto' ref={statsColRef}>
             <div className='row border shadow-sm mb-3 pt-2'>
               <Overall stOverall={statsOverall}/>
               <Bar data={overallBarData} options={overallBarOptions}/>
@@ -404,7 +409,7 @@ function Stats()
                 <label>Expenses</label>                                
               </form>
             </div>
-            <table id="transactions-table" className="table table-striped table-bordered table-hover table-sm">
+            <table id="transactions-table" className="table table-bordered table-hover table-sm">
               <thead className="table-primary">
                 <tr>
                   <th>Date</th>                    

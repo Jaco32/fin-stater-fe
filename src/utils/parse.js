@@ -2,8 +2,10 @@ export function parseTransactions(transactions) {
     if (transactions !== undefined) {
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
         const transactionsItems = []
+        console.log("Parsing " + transactions.length + " transactions")
         for (let i = 0; i < transactions.length; i++) {
             if (transactions[i].usedForCalculation === false) {
+                console.log("Setting transaction " + i + " as not used")
                 transactionsItems.push(<tr key={i} className="table-danger">
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
                     <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
@@ -17,7 +19,7 @@ export function parseTransactions(transactions) {
                 </tr>);
             }
             else {
-                transactionsItems.push(<tr key={i}>
+                transactionsItems.push(<tr key={i} className="table-light">
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
                     <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
                     <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
