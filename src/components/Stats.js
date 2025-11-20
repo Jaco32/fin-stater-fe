@@ -83,6 +83,11 @@ function Stats()
                   )
               }
 
+              console.log("monthly stats - inputting - rateOfReturn: " + monthlyStats[i].rateOfReturn)
+
+              let rateOfReturn = ""
+              if (monthlyStats[i].rateOfReturn === "-Infinity") rateOfReturn = "N/A"
+              else rateOfReturn = monthlyStats[i].rateOfReturn.toFixed(0) + " %"
               monthlyStatsTBody.push(
               <>
                   <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
@@ -90,7 +95,7 @@ function Stats()
                       <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
                       <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>
                       <td>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</td>
-                      <td>{monthlyStats[i].rateOfReturn.toFixed(0)} %</td>
+                      <td>{rateOfReturn}</td>
                   </tr>
                   {toogle[i] &&
                   (<tr>
