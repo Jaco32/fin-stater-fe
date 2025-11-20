@@ -38,7 +38,7 @@ function Stats()
     const statsColRef = useRef(null);
 
     useEffect(() => {
-      console.log("Calling use effect");
+      console.log("Stats component - calling useEffect");
       transactionColRef.current.style.height = statsColRef.current.offsetHeight.toString() + 'px';
 
       if(firstRender) {
