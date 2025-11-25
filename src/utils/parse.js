@@ -60,6 +60,7 @@ export function parseOverallStats(overallStats)
 }
 
 export function mapCategories(category) {
+    console.log("Mapping category: " + category)
     switch(category) {
         case "SPOZYWCZE":
             return "Jedzenie";
@@ -77,6 +78,10 @@ export function mapCategories(category) {
             return "Paliwo";
         case "DOM":
             return "Dom";
+        case "KARTA_KREDYTOWA":
+            return "Karta kredytowa";
+        case "HIGIENA":
+            return "Higiena"
         default:
             return "Inne";
     }

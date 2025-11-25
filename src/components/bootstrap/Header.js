@@ -15,7 +15,8 @@ function Header() {
     let log_out_flag = false;
     let add_file_flag = false;
     
-    if ((window.location.pathname === "/sign_up") || 
+    if ((window.location.pathname === "/sign_in") ||
+        (window.location.pathname === "/sign_up") || 
         (window.location.pathname === "/upload_transactions") || 
         (window.location.pathname === "/stats"))
     {

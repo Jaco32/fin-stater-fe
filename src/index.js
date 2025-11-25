@@ -7,7 +7,7 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import Main from './components/Main';
-import SignIn from './components/SignIn'
+import SignIn from './components/bootstrap/SignIn'
 import SignUp from './components/bootstrap/SignUp';
 import UploadTransactions from './components/bootstrap/UploadTransactions';
 import Stats from './components/Stats';
