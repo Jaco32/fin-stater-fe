@@ -205,16 +205,19 @@ function Stats()
     }
 
     function excludeTransactionFromStats(event) {
-      console.log("Sending '/transaction/toogleforstats/" + event.target.parentNode.rowIndex + "'")
+      const dBTransactionsTableId = rawTransactions[event.target.parentNode.rowIndex-1].id
+      const urlPart = "/transaction/toogleforstats/" + dBTransactionsTableId
+      console.log("Sending '" + urlPart + "'")
       let xhr = new XMLHttpRequest()
-      xhr.open('PATCH', process.env.REACT_APP_BACKEND_URL + '/transaction/toogleforstats/' + event.target.parentNode.rowIndex, false)
+      xhr.open('PATCH', process.env.REACT_APP_BACKEND_URL + urlPart, false)
       xhr.setRequestHeader('mode', 'no-cors');
       xhr.send(null)
 
       setTransactionExclusion((prev) => !prev)
     }
 
-    const parsedTransactions = parseTransactions(getTransactionsSynch())
+    const rawTransactions = getTransactionsSynch()
+    const parsedTransactions = parseTransactions(rawTransactions)
     const stats = getStatsSynch()
     const statsPerMonth = parseMonthlyStats(stats.statMonth)
     const statsOverall = parseOverallStats(stats.stat)

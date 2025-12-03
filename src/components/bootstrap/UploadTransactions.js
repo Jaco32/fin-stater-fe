@@ -1,4 +1,3 @@
-import '../../css/SignUp.css';
 import Header from './Header';
 import { useNavigate } from "react-router-dom";
 
