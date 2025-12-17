@@ -150,6 +150,28 @@ function Stats()
       }
     }
 
+    function filterColumnByText(event) {
+      visibleRows = []
+
+      const filter = document.getElementById(event.target.id).value.toUpperCase()
+      const table = document.getElementById("transactions-table");
+      const tr = table.getElementsByTagName("tr");
+    
+      for (let i = 1; i < tr.length; i++) {
+        const td = tr[i].getElementsByTagName("td")[event.target.parentNode.cellIndex];
+        if (td) {
+          const tdValue = td.textContent || td.innerText;
+          if (tdValue.toUpperCase().indexOf(filter) > -1)
+          {
+            tr[i].style.display = "";
+            visibleRows.push(i);
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+
     function filterTableByDate() {
       const dateFrom = new Date(document.getElementById("table-search-date-from").value)
       const dateTo = new Date(document.getElementById("table-search-date-to").value)
@@ -189,6 +211,46 @@ function Stats()
           }
           else tr[i].style.display = "none";
         else tr[i].style.display = "";
+      }
+    }
+
+    function filterColumnByTextWithCondition() {
+      visibleRows = []
+
+      const filter = document.getElementById("search-box-ad-info").value.toUpperCase()
+      const table = document.getElementById("transactions-table");
+      const tr = table.getElementsByTagName("tr");
+      var searchType = document.getElementById("drop-down-search-type-ad-info-1").options.selectedIndex;
+
+      for (let i = 1; i < tr.length; i++) {
+        const td_info_1 = tr[i].getElementsByTagName("td")[4];
+
+        if (td_info_1) {
+          const tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
+
+          if ((tdInfo1Value.length > 0) && (tdInfo1Value.toUpperCase().indexOf(filter) > -1)) {
+            if (searchType === 0) {
+              if (tr[i].style.display != "none")
+              {
+                tr[i].style.display = "";
+                visibleRows.push(i);
+              }
+            }
+            else {
+              tr[i].style.display = "none";
+            }
+          } else {
+            if (searchType === 0) {
+              tr[i].style.display = "none";
+            }
+            else {
+              if (tr[i].style.display != "none") {
+                tr[i].style.display = "";
+                visibleRows.push(i);
+              }
+            }
+          }
+        }
       }
     }
 
@@ -385,15 +447,17 @@ function Stats()
             </div>
           </div>
           <div className='col overflow-scroll border shadow-sm ms-2' ref={transactionColRef}>
-            <div className='row mt-3 mb-3'>
-              <div className='col'>
-                <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
-              </div>
+            <div className="row mt-3 mb-3">
               <div className='col'>
                 <input type='text' className="form-control" id='view-name-input' placeholder='Enter view name...'/>
               </div>
               <div className='col'>
                 <button onClick={calculateView} className="btn btn-primary">Calculate View</button>
+              </div>
+            </div>
+            <div className='row mt-3 mb-3'>
+              <div className='col'>
+                <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
               </div>
             </div>
             <div className='row mt-3 mb-3'>
@@ -423,10 +487,24 @@ function Stats()
                   <th>Date</th>                    
                   <th>Amount</th>
                   <th>Category</th>
-                  <th>Description</th>
-                  <th>Additional info 1</th>
+                  <th>
+                    Description
+                    <input id="column-search-input-desc" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                  </th>
+                  <th>
+                    Additional info 1
+                    <input type="text" id="search-box-ad-info" placeholder='Search...'/>
+                    <select id="drop-down-search-type-ad-info-1">
+                      <option>contains</option>
+                      <option>doesn't contain</option>
+                    </select>
+                    <input type="submit" value="Filter" onClick={filterColumnByTextWithCondition}/>
+                  </th>
                   <th>Additional info 2</th>
-                  <th>Sender</th>
+                  <th>
+                    Sender
+                    <input id="column-search-input-sender" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                  </th>
                   <th>Receiver</th>
                   <th>Type</th>
                 </tr>
