@@ -261,7 +261,8 @@ function Stats()
         xhr.open("PATCH", process.env.REACT_APP_BACKEND_URL + '/stat/view/' + viewName, false);
         xhr.setRequestHeader('mode', 'no-cors');
         xhr.setRequestHeader('Content-Type', 'text/plain');
-        xhr.send(visibleRows.toString());
+        const visibleDbIds = visibleRows.map(i => rawTransactions[i-1].id);
+        xhr.send(visibleDbIds.toString());
         
         window.location.assign("/stats")
     }
