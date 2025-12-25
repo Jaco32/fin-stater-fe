@@ -16,6 +16,7 @@ export function parseTransactions(transactions) {
                     <td>{transactions[i].sender}</td>
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
+                    <td>{transactions[i].subcategory}</td>
                 </tr>);
             }
             else {
@@ -29,6 +30,7 @@ export function parseTransactions(transactions) {
                     <td>{transactions[i].sender}</td>
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
+                    <td>{transactions[i].subcategory}</td>
                 </tr>);
             }
         }
@@ -60,7 +62,7 @@ export function parseOverallStats(overallStats)
 }
 
 export function mapCategories(category) {
-    console.log("Mapping category: " + category)
+    //console.log("Mapping category: " + category)
     switch(category) {
         case "SPOZYWCZE":
             return "Jedzenie";
@@ -68,20 +70,16 @@ export function mapCategories(category) {
             return "Dzieci";
         case "AUTO":
             return "Samochód";
-        case "ZDROWIE":
-            return "Zdrowie";
+        case "CIALO":
+            return "Cialo";
         case "BANKOMAT":
             return "Wypłaty z bankomatu";
         case "OPLATY":
             return "Opłaty stałe";
-        case "PALIWO":
-            return "Paliwo";
         case "DOM":
             return "Dom";
         case "KARTA_KREDYTOWA":
             return "Karta kredytowa";
-        case "HIGIENA":
-            return "Higiena"
         default:
             return "Inne";
     }
@@ -93,11 +91,23 @@ export function parseCategorizedStats(categorizedStats)
         if (categorizedStats !== undefined) {
             const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
             const mappedCategories = categorizedStats.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
-            for (let i = 0; i < categorizedStats.length; i++) {                
+            for (let i = 0; i < categorizedStats.length; i++) {
+                console.log(categorizedStats[i])
                 categorizedStatsTBody.push(<tr key={i}>
-                    <td>{mappedCategories[i]}</td>
-                    <td>{plnFormatter.format(-1*categorizedStats[i].expense.toFixed(2))}</td>
+                    <td className="expand-subcategories">+</td>
+                    <td className="filter-by-category">{mappedCategories[i]}</td>
+                    <td className="filter-by-category">{plnFormatter.format(-1*categorizedStats[i].expense.toFixed(2))}</td>
                 </tr>)
+                 
+                const subcategoriesKeys = Object.keys(categorizedStats[i].subcategoryStat)
+                const subcategoriesValues = Object.values(categorizedStats[i].subcategoryStat)
+                for(let j = 0; j < subcategoriesKeys.length; j++) {
+                    categorizedStatsTBody.push(<tr key={i}>
+                        <td></td>
+                        <td>{subcategoriesKeys[j]}</td>
+                        <td>{plnFormatter.format(subcategoriesValues[j])}</td>
+                    </tr>)
+                }
             }
         }
         return categorizedStatsTBody;

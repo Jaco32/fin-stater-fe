@@ -508,6 +508,7 @@ function Stats()
                   </th>
                   <th>Receiver</th>
                   <th>Type</th>
+                  <th>Subcategory</th>
                 </tr>
               </thead>
               <tbody ref={transactionsTableRef}>
