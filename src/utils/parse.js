@@ -92,7 +92,6 @@ export function parseCategorizedStats(categorizedStats)
             const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
             const mappedCategories = categorizedStats.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
             for (let i = 0; i < categorizedStats.length; i++) {
-                console.log(categorizedStats[i])
                 categorizedStatsTBody.push(<tr key={i}>
                     <td className="expand-subcategories">+</td>
                     <td className="filter-by-category">{mappedCategories[i]}</td>
@@ -102,7 +101,7 @@ export function parseCategorizedStats(categorizedStats)
                 const subcategoriesKeys = Object.keys(categorizedStats[i].subcategoryStat)
                 const subcategoriesValues = Object.values(categorizedStats[i].subcategoryStat)
                 for(let j = 0; j < subcategoriesKeys.length; j++) {
-                    categorizedStatsTBody.push(<tr key={i}>
+                    categorizedStatsTBody.push(<tr key={i} className="fs-6">
                         <td></td>
                         <td>{subcategoriesKeys[j]}</td>
                         <td>{plnFormatter.format(subcategoriesValues[j])}</td>

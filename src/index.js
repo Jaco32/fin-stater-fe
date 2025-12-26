@@ -11,7 +11,8 @@ import SignIn from './components/bootstrap/SignIn'
 import SignUp from './components/bootstrap/SignUp';
 import UploadTransactions from './components/bootstrap/UploadTransactions';
 import Stats from './components/Stats';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import './scss/custom.scss'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
