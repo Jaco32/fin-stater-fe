@@ -7,7 +7,8 @@ import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
 import {
   parseTransactions,
   parseAvarageStats,
-  parseOverallStats
+  parseOverallStats,
+  mapCategories
 } from '../utils/parse';
 import { useState, useRef, useEffect } from 'react';
 import {
@@ -215,7 +216,7 @@ function Stats()
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, Title);
 
     const overallBarData = {
-      labels: ['Stat'],
+      labels: [''],
       datasets: [
         {
           label: 'Income',
@@ -250,58 +251,31 @@ function Stats()
         legend: {
           position: 'right',
         },
-        title: {
-          display: true,
-          text: 'Chart.js Horizontal Bar Chart',
-        },
       },
     }
-    const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category);
+    const colorPalette = [
+      'rgb(75, 192, 192)',
+      'rgb(255, 99, 132)',
+      'rgb(53, 162, 235)',
+      'red',
+      'blue',
+      'yellow',
+      'green',
+      'brown',
+      'black'
+    ]
+    const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category).map(category => mapCategories(category));
+    var categorizedBarDataSet = []
+    for(let i = 0; i < categorizedBarLabels.length; i++) {
+      categorizedBarDataSet.push({
+        label: categorizedBarLabels[i],
+        data: [stats.statCategorized[i].expense.toFixed(2)*-1],
+        backgroundColor: colorPalette[i]
+      })
+    }
     const categorizedBarData = {
-      labels: categorizedBarLabels,
-      datasets: [
-        {
-          label: 'Dataset 1',
-          data: stats.statCategorized.map(categoryItem => -1*categoryItem.expense.toFixed(2)),
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-      ]
-    }
-
-    const pieData = {     
-      labels: stats.statCategorized.map(categoryItem => categoryItem.category),
-      datasets: [
-        {
-          data: stats.statCategorized.map(categoryItem => categoryItem.expense.toFixed(2)),
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(75, 192, 192)',
-            'rgb(53, 162, 235)',
-            'rgb(255, 206, 86)',
-            'rgb(153, 102, 255)',
-            'rgb(255, 159, 64)',
-            'brown',
-            'violet',
-            'lightgreen',
-          ],
-        },
-      ],
-    };
-    const pieOptions = {
-      canvas: {
-        style: {
-          width: "100px",
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'left',
-          labels: {
-            boxWidth: 20
-          }
-        }
-      },
-      aspectRatio: 1.3
+      labels: [''],
+      datasets: categorizedBarDataSet
     }
 
     const labels = stats.statMonth.map(monthItem => monthItem.monthName);
@@ -357,12 +331,8 @@ function Stats()
               <Bar data={overallBarData} options={overallBarOptions}/>
             </div>
             <div className='row border shadow-sm mb-3 pt-2'>
-              <div className='col pb-2'>
-                <Categorized stPerCt={stats.statCategorized}/>
-              </div>
-              <div className='col pb-2'>
-                <Bar data={categorizedBarData} options={categorizedBarOptions}/>
-              </div>
+              <Categorized stPerCt={stats.statCategorized}/>
+              <Bar data={categorizedBarData} options={categorizedBarOptions}/>
             </div>
             <div className='row border shadow-sm mb-3 pt-2'>
                 <Monthly stPerMonth={stats.statMonth}/>

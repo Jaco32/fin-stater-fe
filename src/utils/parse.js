@@ -80,6 +80,8 @@ export function mapCategories(category) {
             return "Dom";
         case "KARTA_KREDYTOWA":
             return "Karta kredytowa";
+        case "ROWER":
+            return "Rower";
         default:
             return "Inne";
     }
