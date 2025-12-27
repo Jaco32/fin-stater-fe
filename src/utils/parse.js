@@ -85,33 +85,6 @@ export function mapCategories(category) {
     }
 }
 
-export function parseCategorizedStats(categorizedStats)
-{
-        const categorizedStatsTBody = []
-        if (categorizedStats !== undefined) {
-            const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
-            const mappedCategories = categorizedStats.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
-            for (let i = 0; i < categorizedStats.length; i++) {
-                categorizedStatsTBody.push(<tr key={i}>
-                    <td className="expand-subcategories">+</td>
-                    <td className="filter-by-category">{mappedCategories[i]}</td>
-                    <td className="filter-by-category">{plnFormatter.format(-1*categorizedStats[i].expense.toFixed(2))}</td>
-                </tr>)
-                 
-                const subcategoriesKeys = Object.keys(categorizedStats[i].subcategoryStat)
-                const subcategoriesValues = Object.values(categorizedStats[i].subcategoryStat)
-                for(let j = 0; j < subcategoriesKeys.length; j++) {
-                    categorizedStatsTBody.push(<tr key={i} className="fs-6">
-                        <td></td>
-                        <td>{subcategoriesKeys[j]}</td>
-                        <td>{plnFormatter.format(subcategoriesValues[j])}</td>
-                    </tr>)
-                }
-            }
-        }
-        return categorizedStatsTBody;
-}
-
 export function parseAvarageStats(avarageStats) {
     const avarageStatsTBody = [];
     if (avarageStats !== undefined) {

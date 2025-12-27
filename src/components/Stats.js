@@ -6,10 +6,8 @@ import Avarage from './stats/Avarage';
 import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
 import {
   parseTransactions,
-  parseCategorizedStats,
   parseAvarageStats,
-  parseOverallStats,
-  mapCategories
+  parseOverallStats
 } from '../utils/parse';
 import { useState, useRef, useEffect } from 'react';
 import {
@@ -30,7 +28,6 @@ function Stats()
     console.log("Rendering - Stats");
 
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
-    const [toogle, setToggle] = useState([]);
     const [firstRender, setFirstRender] = useState(true)
 
     const transactionsTableRef = useRef(null);
@@ -49,76 +46,6 @@ function Stats()
         setFirstRender((prev) => !prev)
       }
     })
-
-    function toogleMonthlyCategorized(event) {
-      const toogleCopy = toogle.slice(0)
-      toogleCopy[event.target.parentNode.rowIndex-1] = !toogle[event.target.parentNode.rowIndex-1]
-      setToggle(toogleCopy)
-    }
-
-  function parseMonthlyStats(monthlyStats)
-  {
-      const monthlyStatsTBody = []
-      if (monthlyStats !== undefined)
-      {
-          const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
-
-          if (toogle.length === 0) {
-              const initialToogle = [];
-              for(let i = 0; i < monthlyStats.length; i++) {
-                  initialToogle[i] = false;
-              }
-              setToggle(initialToogle);
-          }
-
-          for (let i = 0; i < monthlyStats.length; i++) {
-              var categorizedMonthly = []
-              for (let j = 0; j < monthlyStats[i].categorizedMonthly.length; j++) {
-                  const mappedCategories = monthlyStats[i].categorizedMonthly.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
-                  categorizedMonthly.push(
-                      <tr key={j}>
-                          <td>{mappedCategories[j]}</td>
-                          <td>{plnFormatter.format(-1*monthlyStats[i].categorizedMonthly[j].expense.toFixed(2))}</td>
-                      </tr>
-                  )
-              }
-
-              console.log("monthly stats - inputting - rateOfReturn: " + monthlyStats[i].rateOfReturn)
-
-              let rateOfReturn = ""
-              if (monthlyStats[i].rateOfReturn === "-Infinity") rateOfReturn = "N/A"
-              else rateOfReturn = monthlyStats[i].rateOfReturn.toFixed(0) + " %"
-              monthlyStatsTBody.push(
-              <>
-                  <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
-                      <td>{monthlyStats[i].monthName}</td>
-                      <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
-                      <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>
-                      <td>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</td>
-                      <td>{rateOfReturn}</td>
-                  </tr>
-                  {toogle[i] &&
-                  (<tr>
-                      <td colSpan={5} style={{ padding: "0px"}}>
-                          <table className="table table-sm">
-                              <thead className='table-info'>
-                                  <tr>
-                                      <th>Category</th>
-                                      <th>Expenses</th>
-                                  </tr>
-                              </thead>
-                              <tbody>{categorizedMonthly}</tbody>
-                          </table>
-                      </td>
-                  </tr>)
-                  }
-              </>
-              )
-          }
-
-          return monthlyStatsTBody;
-      }
-  }
 
     var visibleRows = []
     function filterTableByText() {
@@ -282,10 +209,8 @@ function Stats()
     const rawTransactions = getTransactionsSynch()
     const parsedTransactions = parseTransactions(rawTransactions)
     const stats = getStatsSynch()
-    const statsPerMonth = parseMonthlyStats(stats.statMonth)
     const statsOverall = parseOverallStats(stats.stat)
     const statsAvarage = parseAvarageStats(stats.statAvarage)
-    const statsPerCategory = parseCategorizedStats(stats.statCategorized)
 
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, Title);
 
@@ -433,14 +358,14 @@ function Stats()
             </div>
             <div className='row border shadow-sm mb-3 pt-2'>
               <div className='col pb-2'>
-                <Categorized stPerCt={statsPerCategory}/>
+                <Categorized stPerCt={stats.statCategorized}/>
               </div>
               <div className='col pb-2'>
                 <Bar data={categorizedBarData} options={categorizedBarOptions}/>
               </div>
             </div>
             <div className='row border shadow-sm mb-3 pt-2'>
-                <Monthly stPerMonth={statsPerMonth}/>
+                <Monthly stPerMonth={stats.statMonth}/>
                 <Bar data={barData} options={barOptions}/>
             </div>
             <div className='row border shadow-sm pt-2'>
