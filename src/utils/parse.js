@@ -16,7 +16,7 @@ export function parseTransactions(transactions) {
                     <td>{transactions[i].sender}</td>
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                    <td>{transactions[i].subcategory}</td>
+                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
                 </tr>);
             }
             else {
@@ -30,7 +30,7 @@ export function parseTransactions(transactions) {
                     <td>{transactions[i].sender}</td>
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                    <td>{transactions[i].subcategory}</td>
+                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
                 </tr>);
             }
         }
@@ -84,6 +84,40 @@ export function mapCategories(category) {
             return "Rower";
         default:
             return "Inne";
+    }
+}
+
+export function mapSubcategories(subCategory) {
+    //console.log("Mapping subcategory: " + subCategory)
+    switch(subCategory) {
+        case "SPOZYWCZE_MARKETY":
+            return "Markety";
+        case "SPOZYWCZE_ZAMAWIANE":
+            return "Zamawiane";
+        case "SPOZYWCZE_SLODKOSCI":
+            return "Słodkości";
+        case "SPOZYWCZE_OTHER":
+            return "Pozostałe";
+        case "DZIECI_PLACOWKI":
+            return "Placówki";
+        case "DZIECI_OTHER":
+            return "Pozostałe";
+        case "CIALO_ZDROWIE":
+            return "Zdrowie";
+        case "CIALO_HIGIENA":
+            return "Higiena";
+        case "CIALO_BEAUTY":
+            return "Beauty";
+        case "CIALO_OTHER":
+            return "Pozostałe";
+        case "AUTO_PALIWO":
+            return "Paliwo"
+        case "AUTO_SERWIS":
+            return "Serwis";
+        case "AUTO_OTHER":
+            return "Pozostałe"
+        default:
+            return "Pozostałe";
     }
 }
 

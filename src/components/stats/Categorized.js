@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  mapCategories
+  mapCategories,
+  mapSubcategories
 } from '../../utils/parse';
 
 function Categorized({stPerCt}) {
@@ -55,20 +56,22 @@ function Categorized({stPerCt}) {
         const mappedCategories = categorizedStats.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
         for (let i = 0; i < categorizedStats.length; i++) {
             var subcategorizedStatsTBody = []
-            const subcategoriesKeys = Object.keys(categorizedStats[i].subcategoryStat)
-            const subcategoriesValues = Object.values(categorizedStats[i].subcategoryStat)
+            const subcategoriesKeys = Object.keys(categorizedStats[i].subcategoryStat).map(subCategory => mapSubcategories(subCategory));
+            const subcategoriesValues = Object.values(categorizedStats[i].subcategoryStat);
             for(let j = 0; j < subcategoriesKeys.length; j++) {
                 subcategorizedStatsTBody.push(<tr key={i} className="fs-6">
                     <td></td>
                     <td>{subcategoriesKeys[j]}</td>
-                    <td>{plnFormatter.format(subcategoriesValues[j])}</td>
+                    <td>{plnFormatter.format(subcategoriesValues[j]*-1)}</td>
                 </tr>)
             }
 
             categorizedStatsTBody.push(
               <>
                 <tr key={i}>
-                    <td className="expand-subcategories" onClick={(event) => toogleSubcategorized(event)}>+</td>
+                    <td className="expand-subcategories" onClick={(event) => toogleSubcategorized(event)}>
+                      {subcategoriesKeys.length ? '+' : ''}
+                    </td>
                     <td className="filter-by-category">{mappedCategories[i]}</td>
                     <td className="filter-by-category">{plnFormatter.format(-1*categorizedStats[i].expense.toFixed(2))}</td>
                 </tr>
