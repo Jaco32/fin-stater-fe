@@ -23,6 +23,8 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function Stats()
 {
@@ -33,11 +35,11 @@ function Stats()
 
     const transactionsTableRef = useRef(null);
     const transactionColRef = useRef(null);
-    const statsColRef = useRef(null);
+    const lastStatColRow = useRef(null);
 
     useEffect(() => {
       console.log("Stats component - calling useEffect");
-      transactionColRef.current.style.height = statsColRef.current.offsetHeight.toString() + 'px';
+      transactionColRef.current.style.height = (lastStatColRow.current.offsetHeight*3).toString() + 'px';
 
       if(firstRender) {
         const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
@@ -323,51 +325,51 @@ function Stats()
     return (
       <>
       <Header />
-      <Container className='containe mt-4 mw-100 small'>
-        <div className='row me-1 ms-1'>
-          <div className='col my-auto' ref={statsColRef}>
-            <div className='row border shadow-sm mb-3 pt-2'>
+      <Container className='container mt-4 mw-100 small'>
+        <Row>
+          <Col>
+            <Row className='border shadow-sm mb-3 pt-2'>
               <Overall stOverall={statsOverall}/>
               <Bar data={overallBarData} options={overallBarOptions}/>
-            </div>
-            <div className='row border shadow-sm mb-3 pt-2'>
+            </Row>
+            <Row className='border shadow-sm pt-2'>
+                <Avarage stAvarage={statsAvarage}/>
+            </Row>
+            <Row className='border shadow-sm mb-3 pt-2'>
               <Categorized stPerCt={stats.statCategorized}/>
               <Bar data={categorizedBarData} options={categorizedBarOptions}/>
-            </div>
-            <div className='row border shadow-sm mb-3 pt-2'>
+            </Row>
+            <Row className='border shadow-sm mb-3 pt-2' ref={lastStatColRow}>
                 <Monthly stPerMonth={stats.statMonth}/>
                 <Bar data={barData} options={barOptions}/>
-            </div>
-            <div className='row border shadow-sm pt-2'>
-                <Avarage stAvarage={statsAvarage}/>
-            </div>
-          </div>
-          <div className='col overflow-scroll border shadow-sm ms-2' ref={transactionColRef}>
-            <div className="row mt-3 mb-3">
-              <div className='col'>
+            </Row>
+          </Col>
+          <Col className='border shadow-sm ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
+            <Row className="mt-3 mb-3">
+              <Col>
                 <input type='text' className="form-control" id='view-name-input' placeholder='Enter view name...'/>
-              </div>
-              <div className='col'>
+              </Col>
+              <Col>
                 <button onClick={calculateView} className="btn btn-primary">Calculate View</button>
-              </div>
-            </div>
-            <div className='row mt-3 mb-3'>
-              <div className='col'>
+              </Col>
+            </Row>
+            <Row className='mt-3 mb-3'>
+              <Col>
                 <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
-              </div>
-            </div>
-            <div className='row mt-3 mb-3'>
-              <div className='col'>
+              </Col>
+            </Row>
+            <Row className='mt-3 mb-3'>
+              <Col>
                 <input type="date" className='form-control' id="table-search-date-from"></input>
-              </div>
-              <div className='col'>
+              </Col>
+              <Col>
                 <input type="date" className='form-control' id="table-search-date-to"></input>
-              </div>
-              <div className='col'>
-                <button onClick={filterTableByDate} className="btn btn-primary">Go</button>
-              </div>
-            </div>
-            <div className='row mt-3 mb-3'>
+              </Col>
+              <Col>
+                <button onClick={filterTableByDate} className="btn btn-primary">Filter</button>
+              </Col>
+            </Row>
+            <Row className='mt-3 mb-3'>
               <form>
                 <input type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
                 <label>All</label>
@@ -376,42 +378,44 @@ function Stats()
                 <input type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
                 <label>Expenses</label>                                
               </form>
-            </div>
-            <table id="transactions-table" className="table table-bordered table-hover table-sm">
-              <thead className="table-primary">
-                <tr>
-                  <th>Date</th>                    
-                  <th>Amount</th>
-                  <th>Category</th>
-                  <th>
-                    Description
-                    <input id="column-search-input-desc" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
-                  </th>
-                  <th>
-                    Additional info 1
-                    <input type="text" id="search-box-ad-info" placeholder='Search...'/>
-                    <select id="drop-down-search-type-ad-info-1">
-                      <option>contains</option>
-                      <option>doesn't contain</option>
-                    </select>
-                    <input type="submit" value="Filter" onClick={filterColumnByTextWithCondition}/>
-                  </th>
-                  <th>Additional info 2</th>
-                  <th>
-                    Sender
-                    <input id="column-search-input-sender" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
-                  </th>
-                  <th>Receiver</th>
-                  <th>Type</th>
-                  <th>Subcategory</th>
-                </tr>
-              </thead>
-              <tbody ref={transactionsTableRef}>
-                {parsedTransactions}
-              </tbody>
-            </table>
-          </div>
-        </div>            
+            </Row>
+            <Row className='overflow-y-auto'>
+              <table id="transactions-table" className="table table-bordered table-hover table-sm">
+                <thead className="table-primary">
+                  <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>
+                      Description
+                      <input id="column-search-input-desc" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                    </th>
+                    <th>
+                      Additional info 1
+                      <input type="text" id="search-box-ad-info" placeholder='Search...'/>
+                      <select id="drop-down-search-type-ad-info-1">
+                        <option>contains</option>
+                        <option>doesn't contain</option>
+                      </select>
+                      <input type="submit" value="Filter" onClick={filterColumnByTextWithCondition}/>
+                    </th>
+                    <th>Additional info 2</th>
+                    <th>
+                      Sender
+                      <input id="column-search-input-sender" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                    </th>
+                    <th>Receiver</th>
+                    <th>Type</th>
+                    <th>Subcategory</th>
+                  </tr>
+                </thead>
+                <tbody ref={transactionsTableRef}>
+                  {parsedTransactions}
+                </tbody>
+              </table>
+            </Row>  
+          </Col>
+        </Row>      
       </Container>
       </>
     );

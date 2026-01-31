@@ -57,7 +57,7 @@ function Monthly({stPerMonth}) {
                   {toogle[i] &&
                   (<tr>
                       <td colSpan={5} style={{ padding: "0px"}}>
-                          <table className="table table-sm">
+                          <table className="table table-sm fs-6">
                               <thead className='table-info'>
                                   <tr>
                                       <th>Category</th>
