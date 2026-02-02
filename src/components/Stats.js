@@ -105,8 +105,7 @@ function Stats()
     function filterTableByDate() {
       const dateFrom = new Date(document.getElementById("table-search-date-from").value)
       const dateTo = new Date(document.getElementById("table-search-date-to").value)
-      const table = document.getElementById("transactions-table");
-      const tr = table.getElementsByTagName("tr");
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
       
       visibleRows = []
       for (let i = 1; i < tr.length; i++) {
@@ -119,6 +118,7 @@ function Stats()
           tr[i].style.display = "none";
         }
       }
+      console.log("visibleRows count:" + visibleRows.length)
     }
 
     function filterTableByTransactionType() {
@@ -145,43 +145,35 @@ function Stats()
     }
 
     function filterColumnByTextWithCondition() {
-      visibleRows = []
-
       const filter = document.getElementById("search-box-ad-info").value.toUpperCase()
-      const table = document.getElementById("transactions-table");
-      const tr = table.getElementsByTagName("tr");
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
       var searchType = document.getElementById("drop-down-search-type-ad-info-1").options.selectedIndex;
 
-      for (let i = 1; i < tr.length; i++) {
-        const td_info_1 = tr[i].getElementsByTagName("td")[4];
+      let indexesToDrop = []
+      console.log("Iterating through " + visibleRows.length + " elements of visibleRows")
+      for (let i = 0; i < visibleRows.length; i++) {
+        const idx = visibleRows[i]
+        const td_info_1 = tr[idx].getElementsByTagName("td")[4];
 
         if (td_info_1) {
           const tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
 
           if ((tdInfo1Value.length > 0) && (tdInfo1Value.toUpperCase().indexOf(filter) > -1)) {
-            if (searchType === 0) {
-              if (tr[i].style.display != "none")
-              {
-                tr[i].style.display = "";
-                visibleRows.push(i);
-              }
-            }
-            else {
-              tr[i].style.display = "none";
+            if (searchType !== 0) {
+              tr[idx].style.display = "none";
+              indexesToDrop.push(idx)
             }
           } else {
             if (searchType === 0) {
-              tr[i].style.display = "none";
-            }
-            else {
-              if (tr[i].style.display != "none") {
-                tr[i].style.display = "";
-                visibleRows.push(i);
-              }
+              tr[idx].style.display = "none";
+              indexesToDrop.push(idx)
             }
           }
         }
       }
+      console.log("indexesToDrop:" + indexesToDrop)
+      visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
+      console.log("visibleRows count after filter:" + visibleRows.length)
     }
 
     function calculateView() {
@@ -192,6 +184,7 @@ function Stats()
         xhr.setRequestHeader('mode', 'no-cors');
         xhr.setRequestHeader('Content-Type', 'text/plain');
         const visibleDbIds = visibleRows.map(i => rawTransactions[i-1].id);
+        console.log("Sending view req for ids " + visibleDbIds)
         xhr.send(visibleDbIds.toString());
         
         window.location.assign("/stats")
