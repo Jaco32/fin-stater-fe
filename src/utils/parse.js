@@ -10,13 +10,13 @@ export function parseTransactions(transactions) {
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
                     <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
                     <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
+                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
                     <td>{transactions[i].description}</td>
                     <td>{transactions[i].additional_info}</td>
                     <td>{transactions[i].additional_info_2}</td>
                     <td>{transactions[i].sender}</td>
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
                 </tr>);
             }
             else {
@@ -24,13 +24,13 @@ export function parseTransactions(transactions) {
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
                     <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
                     <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
+                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
                     <td>{transactions[i].description}</td>
                     <td>{transactions[i].additional_info}</td>
                     <td>{transactions[i].additional_info_2}</td>
                     <td>{transactions[i].sender}</td>
                     <td>{transactions[i].receiver}</td>
                     <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
                 </tr>);
             }
         }

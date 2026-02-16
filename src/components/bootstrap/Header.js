@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -48,30 +49,48 @@ function Header() {
         });
     }
 
+    function handleStatsClear() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("PATCH", process.env.REACT_APP_BACKEND_URL + '/stat/clear', false);
+        xhr.setRequestHeader('mode', 'no-cors');
+        xhr.setRequestHeader('Content-Type', 'text/plain');
+        xhr.send(null);
+        window.location.assign("/stats")
+    }
+
     return (
-        <>
-            <Navbar className="navbar-dark bg-primary">
-                <Container fluid className="ms-2 me-2">
-                    <Navbar.Brand href="/">FinStat</Navbar.Brand>
-                    <Navbar.Text>Basic Financial Statistics</Navbar.Text>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    {add_file_flag && (
-                        <Form inline>
-                            <InputGroup>
-                                <Form.Control type="file" onChange={handleFileUpload}/>
-                            </InputGroup>
-                        </Form>
-                    )}
-                    <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end me-2">
+        <Navbar className="navbar-dark bg-primary">
+            <Container fluid className="ms-2 me-2">
+                <Navbar.Brand href="/">FinStat</Navbar.Brand>
+                <Navbar.Text>Basic Financial Statistics</Navbar.Text>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                
+                {add_file_flag && (
+                    <Form inline>
+                        <InputGroup>
+                            <Form.Label for="add-file">Add file</Form.Label>
+                            <Form.Control type="file" onChange={handleFileUpload} id="add-file" style={{ opacity: 1, zIndex: -1, position: "absolute" }}/>
+                        </InputGroup>
+                    </Form>
+                )}
+                    
+                {log_out_flag && (
+                    <Navbar.Collapse id="basic-navbar-nav">
                         <Nav>
-                            {sign_in_flag && (<Nav.Link href="/sign_in">Sign In</Nav.Link>)}
-                            {sign_up_flag && (<Nav.Link href="/sign_up">Sign Up</Nav.Link>)}
-                            {log_out_flag && (<Nav.Link href="/">Log Out</Nav.Link>)}
+                            <Nav.Link onClick={handleStatsClear}>Clear Stats</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
-                </Container>
-            </Navbar>
-        </>
+                )}
+
+                <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end me-2">
+                    <Nav>
+                        {sign_in_flag && (<Nav.Link href="/sign_in">Sign In</Nav.Link>)}
+                        {sign_up_flag && (<Nav.Link href="/sign_up">Sign Up</Nav.Link>)}
+                        {log_out_flag && (<Nav.Link href="/">Log Out</Nav.Link>)}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     )
 }   
 

@@ -4,9 +4,9 @@ env:
   REACT_APP_BACKEND_URL: https://finstat-exaygthqesfvabfr.polandcentral-01.azurewebsites.net
 
 on:
-  push:
-    branches:
-      - master
+#  push:
+#    branches:
+#      - master
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:

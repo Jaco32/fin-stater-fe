@@ -81,25 +81,22 @@ function Stats()
     }
 
     function filterColumnByText(event) {
-      visibleRows = []
-
       const filter = document.getElementById(event.target.id).value.toUpperCase()
-      const table = document.getElementById("transactions-table");
-      const tr = table.getElementsByTagName("tr");
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
     
-      for (let i = 1; i < tr.length; i++) {
-        const td = tr[i].getElementsByTagName("td")[event.target.parentNode.cellIndex];
+      let indexesToDrop = []
+      for (let i = 0; i < visibleRows.length; i++) {
+        const idx = visibleRows[i]
+        const td = tr[idx].getElementsByTagName("td")[event.target.parentNode.cellIndex];
         if (td) {
           const tdValue = td.textContent || td.innerText;
-          if (tdValue.toUpperCase().indexOf(filter) > -1)
-          {
-            tr[i].style.display = "";
-            visibleRows.push(i);
-          } else {
-            tr[i].style.display = "none";
+          if (tdValue.toUpperCase().indexOf(filter) === -1){
+            tr[idx].style.display = "none";
+            indexesToDrop.push(idx)
           }
         }
       }
+      visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
     }
 
     function filterTableByDate() {
@@ -210,27 +207,6 @@ function Stats()
 
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, Title);
 
-    const overallBarData = {
-      labels: [''],
-      datasets: [
-        {
-          label: 'Income',
-          data: [stats.stat[0].income.toFixed(2)],
-          backgroundColor: 'rgb(75, 192, 192)',
-        },
-        {
-          label: 'Expenses',
-          data: [-1*stats.stat[0].expenses.toFixed(2)],
-          backgroundColor: 'rgb(255, 99, 132)',
-        },
-        {
-          label: 'Savings',
-          data: [stats.stat[0].periodBalance.toFixed(2)],
-          backgroundColor: 'rgb(53, 162, 235)',
-        },
-      ],
-    };
-
     const overallBarOptions = {
       responsive: true,
       interaction: {
@@ -238,6 +214,30 @@ function Stats()
         intersect: false,
       },
     };
+
+    var overallBarData = {}
+    if (stats.stat.length != 0) {
+      overallBarData = {
+        labels: [''],
+        datasets: [
+          {
+            label: 'Income',
+            data: [stats.stat[0].income.toFixed(2)],
+            backgroundColor: 'rgb(75, 192, 192)',
+          },
+          {
+            label: 'Expenses',
+            data: [-1*stats.stat[0].expenses.toFixed(2)],
+            backgroundColor: 'rgb(255, 99, 132)',
+          },
+          {
+            label: 'Savings',
+            data: [stats.stat[0].periodBalance.toFixed(2)],
+            backgroundColor: 'rgb(53, 162, 235)',
+          },
+        ],
+      };
+    }
 
     const categorizedBarOptions = {
       indexAxis: 'y',
@@ -248,6 +248,7 @@ function Stats()
         },
       },
     }
+
     const colorPalette = [
       'rgb(75, 192, 192)',
       'rgb(255, 99, 132)',
@@ -259,44 +260,23 @@ function Stats()
       'brown',
       'black'
     ]
-    const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category).map(category => mapCategories(category));
-    var categorizedBarDataSet = []
-    for(let i = 0; i < categorizedBarLabels.length; i++) {
-      categorizedBarDataSet.push({
-        label: categorizedBarLabels[i],
-        data: [stats.statCategorized[i].expense.toFixed(2)*-1],
-        backgroundColor: colorPalette[i]
-      })
-    }
-    const categorizedBarData = {
-      labels: [''],
-      datasets: categorizedBarDataSet
-    }
 
-    const labels = stats.statMonth.map(monthItem => monthItem.monthName);
-    const barData = {
-      labels,
-      datasets: [
-        {
-          label: 'Income',
-          data: stats.statMonth.map(monthItem => monthItem.income.toFixed(2)),
-          backgroundColor: 'rgb(75, 192, 192)',
-          stack: 'Stack 0',
-        },
-        {
-          label: 'Expenses',
-          data: stats.statMonth.map(monthItem => -1*monthItem.expenses.toFixed(2)),
-          backgroundColor: 'rgb(255, 99, 132)',
-          stack: 'Stack 1',
-        },
-        {
-          label: 'Savings',
-          data: stats.statMonth.map(monthItem => monthItem.balance.toFixed(2)),
-          backgroundColor: 'rgb(53, 162, 235)',
-          stack: 'Stack 2',
-        },
-      ],
-    };
+    var categorizedBarData = {}
+    if (stats.statCategorized.length != 0) {
+      const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category).map(category => mapCategories(category));
+      var categorizedBarDataSet = []
+      for(let i = 0; i < categorizedBarLabels.length; i++) {
+        categorizedBarDataSet.push({
+          label: categorizedBarLabels[i],
+          data: [stats.statCategorized[i].expense.toFixed(2)*-1],
+          backgroundColor: colorPalette[i]
+        })
+      }
+      categorizedBarData = {
+        labels: [''],
+        datasets: categorizedBarDataSet
+      }
+    }
 
     const barOptions = {
       responsive: true,
@@ -315,6 +295,38 @@ function Stats()
       aspectRatio: 1.2
     };
 
+    var barData = {}
+    if (stats.statMonth.length != 0) {
+      const labels = stats.statMonth.map(monthItem => monthItem.monthName);
+      barData = {
+        labels,
+        datasets: [
+          {
+            label: 'Income',
+            data: stats.statMonth.map(monthItem => monthItem.income.toFixed(2)),
+            backgroundColor: 'rgb(75, 192, 192)',
+            stack: 'Stack 0',
+          },
+          {
+            label: 'Expenses',
+            data: stats.statMonth.map(monthItem => -1*monthItem.expenses.toFixed(2)),
+            backgroundColor: 'rgb(255, 99, 132)',
+            stack: 'Stack 1',
+          },
+          {
+            label: 'Savings',
+            data: stats.statMonth.map(monthItem => monthItem.balance.toFixed(2)),
+            backgroundColor: 'rgb(53, 162, 235)',
+            stack: 'Stack 2',
+          },
+        ],
+      };
+    }
+
+    if (Object.keys(overallBarData).length === 0) {
+      console.log("Sure")
+    }
+
     return (
       <>
       <Header />
@@ -323,18 +335,18 @@ function Stats()
           <Col>
             <Row className='border shadow-sm mb-3 pt-2'>
               <Overall stOverall={statsOverall}/>
-              <Bar data={overallBarData} options={overallBarOptions}/>
+              {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h1>Overall</h1>}
             </Row>
             <Row className='border shadow-sm pt-2'>
                 <Avarage stAvarage={statsAvarage}/>
             </Row>
             <Row className='border shadow-sm mb-3 pt-2'>
               <Categorized stPerCt={stats.statCategorized}/>
-              <Bar data={categorizedBarData} options={categorizedBarOptions}/>
+              {Object.keys(categorizedBarData).length !== 0 ? <Bar data={categorizedBarData} options={categorizedBarOptions}/> : <h1>Categorized</h1>}
             </Row>
             <Row className='border shadow-sm mb-3 pt-2' ref={lastStatColRow}>
                 <Monthly stPerMonth={stats.statMonth}/>
-                <Bar data={barData} options={barOptions}/>
+                {Object.keys(barData).length !== 0 ? <Bar data={barData} options={barOptions}/> : <h1>Monthly</h1>}
             </Row>
           </Col>
           <Col className='border shadow-sm ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
@@ -380,6 +392,10 @@ function Stats()
                     <th>Amount</th>
                     <th>Category</th>
                     <th>
+                      Subcategory
+                      <input id="column-search-input-subcat" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                    </th>
+                    <th>
                       Description
                       <input id="column-search-input-desc" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
                     </th>
@@ -399,7 +415,6 @@ function Stats()
                     </th>
                     <th>Receiver</th>
                     <th>Type</th>
-                    <th>Subcategory</th>
                   </tr>
                 </thead>
                 <tbody ref={transactionsTableRef}>

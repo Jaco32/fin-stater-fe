@@ -17,7 +17,7 @@ function Monthly({stPerMonth}) {
     {
       const monthlyStatsTBody = []
       if (monthlyStats !== undefined)
-      {
+        if (monthlyStats.length > 0) {
           const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
 
           if (toogle.length === 0) {
@@ -72,9 +72,9 @@ function Monthly({stPerMonth}) {
               </>
               )
           }
+        }
 
-          return monthlyStatsTBody;
-      }
+      return monthlyStatsTBody;
     }
 
     const statsPerMonth = parseMonthlyStats(stPerMonth)
