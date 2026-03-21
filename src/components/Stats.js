@@ -25,6 +25,8 @@ import { Bar } from 'react-chartjs-2';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+//import bootstrap from 'bootstrap'
 
 function Stats()
 {
@@ -32,6 +34,7 @@ function Stats()
 
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [firstRender, setFirstRender] = useState(true)
+    const [isCollapse, setIsCollapse] = useState(false)
 
     const transactionsTableRef = useRef(null);
     const transactionColRef = useRef(null);
@@ -39,7 +42,7 @@ function Stats()
 
     useEffect(() => {
       console.log("Stats component - calling useEffect");
-      transactionColRef.current.style.height = (lastStatColRow.current.offsetHeight*3).toString() + 'px';
+      if (!isCollapse) transactionColRef.current.style.height = (lastStatColRow.current.offsetHeight*3).toString() + 'px';
 
       if(firstRender) {
         const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
@@ -150,7 +153,7 @@ function Stats()
       console.log("Iterating through " + visibleRows.length + " elements of visibleRows")
       for (let i = 0; i < visibleRows.length; i++) {
         const idx = visibleRows[i]
-        const td_info_1 = tr[idx].getElementsByTagName("td")[4];
+        const td_info_1 = tr[idx].getElementsByTagName("td")[5];
 
         if (td_info_1) {
           const tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
@@ -332,7 +335,7 @@ function Stats()
       <Header />
       <Container className='container mt-4 mw-100 small'>
         <Row>
-          <Col>
+          <Col className={`collapse ${isCollapse ? "" : "show"}`} id='statsCol'>
             <Row className='border shadow-sm mb-3 pt-2'>
               <Overall stOverall={statsOverall}/>
               {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h1>Overall</h1>}
@@ -350,7 +353,12 @@ function Stats()
             </Row>
           </Col>
           <Col className='border shadow-sm ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
-            <Row className="mt-3 mb-3">
+            <Row className='mt-3'>
+              <Col>
+                <Button variant='primary' onClick={() => setIsCollapse(!isCollapse)} aria-expanded={isCollapse} aria-controls="statsCol">&lt; &lt;</Button>
+              </Col>
+            </Row>
+            <Row className="mt-3">
               <Col>
                 <input type='text' className="form-control" id='view-name-input' placeholder='Enter view name...'/>
               </Col>
@@ -358,12 +366,12 @@ function Stats()
                 <button onClick={calculateView} className="btn btn-primary">Calculate View</button>
               </Col>
             </Row>
-            <Row className='mt-3 mb-3'>
+            <Row className='mt-3'>
               <Col>
                 <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
               </Col>
             </Row>
-            <Row className='mt-3 mb-3'>
+            <Row className='mt-3'>
               <Col>
                 <input type="date" className='form-control' id="table-search-date-from"></input>
               </Col>
@@ -387,7 +395,7 @@ function Stats()
             <Row className='overflow-y-auto'>
               <table id="transactions-table" className="table table-bordered table-hover table-sm">
                 <thead className="table-primary">
-                  <tr>
+                  <tr style={{ position: 'sticky', top: 0 }}>
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Category</th>
@@ -421,9 +429,9 @@ function Stats()
                   {parsedTransactions}
                 </tbody>
               </table>
-            </Row>  
+            </Row>
           </Col>
-        </Row>      
+        </Row>
       </Container>
       </>
     );
