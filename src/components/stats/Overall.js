@@ -9,6 +9,7 @@ function Overall({stOverall}) {
                     <th>Income</th>
                     <th>Expenses</th>
                     <th>Balance</th>
+                    <th>Excluded</th>
                     <th>View name</th>
                 </tr>
             </thead>
