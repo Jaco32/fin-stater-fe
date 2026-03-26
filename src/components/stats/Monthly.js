@@ -5,76 +5,75 @@ import {
 
 function Monthly({stPerMonth}) {
 
-    const [toogle, setToggle] = useState([]);
+    const [toogle, setToggle] = useState(new Map());
 
     function toogleMonthlyCategorized(event) {
-      const toogleCopy = toogle.slice(0)
-      toogleCopy[event.target.parentNode.rowIndex-1] = !toogle[event.target.parentNode.rowIndex-1]
-      setToggle(toogleCopy)
+      const yearMonthKey = event.target.parentNode.getElementsByTagName("td")[0].textContent
+      let yearMonthValue = toogle.get(yearMonthKey)
+      setToggle(new Map(toogle.set(yearMonthKey, !yearMonthValue)))
     }
 
     function parseMonthlyStats(monthlyStats)
     {
-      const monthlyStatsTBody = []
-      if (monthlyStats !== undefined)
-        if (monthlyStats.length > 0) {
-          const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
+        const monthlyStatsTBody = []
+        if ((monthlyStats !== undefined) && (monthlyStats.length > 0)) {
+            const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
 
-          if (toogle.length === 0) {
-              const initialToogle = [];
-              for(let i = 0; i < monthlyStats.length; i++) {
-                  initialToogle[i] = false;
-              }
-              setToggle(initialToogle);
-          }
+            if (toogle.size === 0) {
+                const initialToogle = new Map();
+                for(let i = 0; i < monthlyStats.length; i++) {
+                    initialToogle.set(monthlyStats[i], false);
+                }
+                setToggle(initialToogle);
+            }
 
-          for (let i = 0; i < monthlyStats.length; i++) {
-              var categorizedMonthly = []
-              for (let j = 0; j < monthlyStats[i].categorizedMonthly.length; j++) {
-                  const mappedCategories = monthlyStats[i].categorizedMonthly.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
-                  categorizedMonthly.push(
-                      <tr key={j}>
-                          <td>{mappedCategories[j]}</td>
-                          <td>{plnFormatter.format(-1*monthlyStats[i].categorizedMonthly[j].expense.toFixed(2))}</td>
-                      </tr>
-                  )
-              }
+            for (let i = 0; i < monthlyStats.length; i++) {
+                var categorizedMonthly = []
+                for (let j = 0; j < monthlyStats[i].categorizedMonthly.length; j++) {
+                    const mappedCategories = monthlyStats[i].categorizedMonthly.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
+                    categorizedMonthly.push(
+                        <tr key={j}>
+                            <td>{mappedCategories[j]}</td>
+                            <td>{plnFormatter.format(-1*monthlyStats[i].categorizedMonthly[j].expense.toFixed(2))}</td>
+                        </tr>
+                    )
+                }
 
-              console.log("monthly stats - inputting - rateOfReturn: " + monthlyStats[i].rateOfReturn)
+                console.log("monthly stats - inputting - rateOfReturn: " + monthlyStats[i].rateOfReturn)
 
-              let rateOfReturn = ""
-              if (monthlyStats[i].rateOfReturn === "-Infinity") rateOfReturn = "N/A"
-              else rateOfReturn = monthlyStats[i].rateOfReturn.toFixed(0) + " %"
-              monthlyStatsTBody.push(
-              <>
-                  <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
-                      <td>{monthlyStats[i].monthName}</td>
-                      <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
-                      <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>
-                      <td>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</td>
-                      <td>{rateOfReturn}</td>
-                  </tr>
-                  {toogle[i] &&
-                  (<tr>
-                      <td colSpan={5} style={{ padding: "0px"}}>
-                          <table className="table table-sm fs-6">
-                              <thead className='table-info'>
-                                  <tr>
-                                      <th>Category</th>
-                                      <th>Expenses</th>
-                                  </tr>
-                              </thead>
-                              <tbody>{categorizedMonthly}</tbody>
-                          </table>
-                      </td>
-                  </tr>)
-                  }
-              </>
-              )
-          }
+                let rateOfReturn = ""
+                if (monthlyStats[i].rateOfReturn === "-Infinity") rateOfReturn = "N/A"
+                else rateOfReturn = monthlyStats[i].rateOfReturn.toFixed(0) + " %"
+                monthlyStatsTBody.push(
+                <>
+                    <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
+                        <td>{monthlyStats[i].monthName}</td>
+                        <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
+                        <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>
+                        <td>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</td>
+                        <td>{rateOfReturn}</td>
+                    </tr>
+                    {toogle.get(monthlyStats[i].monthName) &&
+                    (<tr>
+                        <td colSpan={5} style={{ padding: "0px"}}>
+                            <table className="table table-sm fs-6">
+                                <thead className='table-info'>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Expenses</th>
+                                    </tr>
+                                </thead>
+                                <tbody>{categorizedMonthly}</tbody>
+                            </table>
+                        </td>
+                    </tr>)
+                    }
+                </>
+                )
+            }
         }
 
-      return monthlyStatsTBody;
+        return monthlyStatsTBody;
     }
 
     const statsPerMonth = parseMonthlyStats(stPerMonth)

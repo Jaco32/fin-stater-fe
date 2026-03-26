@@ -384,12 +384,12 @@ function Stats()
             </Row>
             <Row className='mt-3 mb-3'>
               <form>
-                <input type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
-                <label>All</label>
-                <input type="radio" name="tansaction-type-form" id="radio-income" onChange={filterTableByTransactionType}/>
-                <label>Income</label>
-                <input type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
-                <label>Expenses</label>                                
+                <input className="form-check-input" type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
+                <label className='form-check-label'>All</label>
+                <input className="form-check-input" type="radio" name="tansaction-type-form" id="radio-income" onChange={filterTableByTransactionType}/>
+                <label className='form-check-label'>Income</label>
+                <input className="form-check-input" type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
+                <label className='form-check-label'>Expenses</label>                                
               </form>
             </Row>
             <Row className='overflow-y-auto'>
