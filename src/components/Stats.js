@@ -10,6 +10,7 @@ import {
   parseOverallStats,
   mapCategories
 } from '../utils/parse';
+import { getOverallStatBarChartData } from '../utils/charts';
 import { useState, useRef, useEffect } from 'react';
 import {
   Chart,
@@ -26,7 +27,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-//import bootstrap from 'bootstrap'
 
 function Stats()
 {
@@ -176,6 +176,19 @@ function Stats()
       console.log("visibleRows count after filter:" + visibleRows.length)
     }
 
+    function filterExcludedTransactions() {
+      visibleRows = []
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
+      for (let i = 1; i < tr.length; i++) {
+        console.log(tr[i].className)
+        if (tr[i].className === 'table-danger') {
+          tr[i].style.display = "";
+          visibleRows.push(i);
+        }
+        else tr[i].style.display = "none";
+      }
+    }
+
     function calculateView() {
         var viewName = document.getElementById('view-name-input').value;
         
@@ -210,6 +223,7 @@ function Stats()
 
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, Title);
 
+    const overallBarData = getOverallStatBarChartData(stats)
     const overallBarOptions = {
       responsive: true,
       interaction: {
@@ -218,29 +232,7 @@ function Stats()
       },
     };
 
-    var overallBarData = {}
-    if (stats.stat.length != 0) {
-      overallBarData = {
-        labels: [''],
-        datasets: [
-          {
-            label: 'Income',
-            data: [stats.stat[0].income.toFixed(2)],
-            backgroundColor: 'rgb(75, 192, 192)',
-          },
-          {
-            label: 'Expenses',
-            data: [-1*stats.stat[0].expenses.toFixed(2)],
-            backgroundColor: 'rgb(255, 99, 132)',
-          },
-          {
-            label: 'Savings',
-            data: [stats.stat[0].periodBalance.toFixed(2)],
-            backgroundColor: 'rgb(53, 162, 235)',
-          },
-        ],
-      };
-    }
+
 
     const categorizedBarOptions = {
       indexAxis: 'y',
@@ -326,10 +318,6 @@ function Stats()
       };
     }
 
-    if (Object.keys(overallBarData).length === 0) {
-      console.log("Sure")
-    }
-
     return (
       <>
       <Header />
@@ -384,12 +372,14 @@ function Stats()
             </Row>
             <Row className='mt-3 mb-3'>
               <form>
-                <input className="form-check-input" type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
-                <label className='form-check-label'>All</label>
-                <input className="form-check-input" type="radio" name="tansaction-type-form" id="radio-income" onChange={filterTableByTransactionType}/>
-                <label className='form-check-label'>Income</label>
-                <input className="form-check-input" type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
-                <label className='form-check-label'>Expenses</label>                                
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
+                <label className='form-check-label me-3'>All</label>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-income" onChange={filterTableByTransactionType}/>
+                <label className='form-check-label me-3'>Income</label>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
+                <label className='form-check-label me-3'>Expenses</label>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-excluded" onChange={filterExcludedTransactions}/>
+                <label className='form-check-label me-3'>Excluded</label>
               </form>
             </Row>
             <Row className='overflow-y-auto'>
