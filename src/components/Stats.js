@@ -8,9 +8,13 @@ import {
   parseTransactions,
   parseAvarageStats,
   parseOverallStats,
-  mapCategories
 } from '../utils/parse';
-import { getOverallStatBarChartData } from '../utils/charts';
+import {
+  getOverallStatBarChartData,
+  getCategorizedStatBarChartData,
+  getMonthlyStatBarChartData,
+  getMonthlyStatLineChartData
+} from '../utils/charts';
 import { useState, useRef, useEffect } from 'react';
 import {
   Chart,
@@ -20,9 +24,11 @@ import {
   LinearScale,
   BarElement,
   ArcElement,
+  PointElement,
+  LineElement,
   Title
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -221,7 +227,7 @@ function Stats()
     const statsOverall = parseOverallStats(stats.stat)
     const statsAvarage = parseAvarageStats(stats.statAvarage)
 
-    Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, Title);
+    Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title);
 
     const overallBarData = getOverallStatBarChartData(stats)
     const overallBarOptions = {
@@ -232,8 +238,7 @@ function Stats()
       },
     };
 
-
-
+    const categorizedBarData = getCategorizedStatBarChartData(stats)
     const categorizedBarOptions = {
       indexAxis: 'y',
       responsive: true,
@@ -244,36 +249,8 @@ function Stats()
       },
     }
 
-    const colorPalette = [
-      'rgb(75, 192, 192)',
-      'rgb(255, 99, 132)',
-      'rgb(53, 162, 235)',
-      'red',
-      'blue',
-      'yellow',
-      'green',
-      'brown',
-      'black'
-    ]
-
-    var categorizedBarData = {}
-    if (stats.statCategorized.length != 0) {
-      const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category).map(category => mapCategories(category));
-      var categorizedBarDataSet = []
-      for(let i = 0; i < categorizedBarLabels.length; i++) {
-        categorizedBarDataSet.push({
-          label: categorizedBarLabels[i],
-          data: [stats.statCategorized[i].expense.toFixed(2)*-1],
-          backgroundColor: colorPalette[i]
-        })
-      }
-      categorizedBarData = {
-        labels: [''],
-        datasets: categorizedBarDataSet
-      }
-    }
-
-    const barOptions = {
+    const monthlyStatBarChartData = getMonthlyStatBarChartData(stats)
+    const monthlyStatBarChartOptions = {
       responsive: true,
       interaction: {
         mode: 'index',
@@ -290,33 +267,19 @@ function Stats()
       aspectRatio: 1.2
     };
 
-    var barData = {}
-    if (stats.statMonth.length != 0) {
-      const labels = stats.statMonth.map(monthItem => monthItem.monthName);
-      barData = {
-        labels,
-        datasets: [
-          {
-            label: 'Income',
-            data: stats.statMonth.map(monthItem => monthItem.income.toFixed(2)),
-            backgroundColor: 'rgb(75, 192, 192)',
-            stack: 'Stack 0',
-          },
-          {
-            label: 'Expenses',
-            data: stats.statMonth.map(monthItem => -1*monthItem.expenses.toFixed(2)),
-            backgroundColor: 'rgb(255, 99, 132)',
-            stack: 'Stack 1',
-          },
-          {
-            label: 'Savings',
-            data: stats.statMonth.map(monthItem => monthItem.balance.toFixed(2)),
-            backgroundColor: 'rgb(53, 162, 235)',
-            stack: 'Stack 2',
-          },
-        ],
-      };
-    }
+    const monthlyStatLineChartData = getMonthlyStatLineChartData(stats)
+    const monthlyStatLineChartOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Line Chart',
+        },
+      },
+    };
 
     return (
       <>
@@ -335,9 +298,12 @@ function Stats()
               <Categorized stPerCt={stats.statCategorized}/>
               {Object.keys(categorizedBarData).length !== 0 ? <Bar data={categorizedBarData} options={categorizedBarOptions}/> : <h1>Categorized</h1>}
             </Row>
-            <Row className='border shadow-sm mb-3 pt-2' ref={lastStatColRow}>
+            <Row className='border shadow-sm mb-3 pt-2'>
                 <Monthly stPerMonth={stats.statMonth}/>
-                {Object.keys(barData).length !== 0 ? <Bar data={barData} options={barOptions}/> : <h1>Monthly</h1>}
+                {Object.keys(monthlyStatBarChartData).length !== 0 ? <Bar data={monthlyStatBarChartData} options={monthlyStatBarChartOptions}/> : <h1>Monthly Bar</h1>}
+            </Row>
+            <Row className='border shadow-sm mb-3 pt-2' ref={lastStatColRow}>
+              {Object.keys(monthlyStatLineChartData).length !== 0 ? <Line data={monthlyStatLineChartData} options={monthlyStatLineChartOptions}/> : <h1>Monthly Line</h1>}
             </Row>
           </Col>
           <Col className='border shadow-sm ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
