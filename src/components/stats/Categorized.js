@@ -14,7 +14,7 @@ function Categorized({stPerCt}) {
       console.log("Categorized component - calling useEffect");
 
       if(firstRender) {
-        if (toogle.length > 0) {
+        if (toogle.size > 0) {
           const categorisedRowsFilterByCategory = categorisedTableRef.current.getElementsByClassName("filter-by-category");
           for(const categorisedRow of categorisedRowsFilterByCategory) {
             categorisedRow.addEventListener("click", (event) => filterTableByTransactionCategory(event))

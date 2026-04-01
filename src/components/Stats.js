@@ -41,6 +41,9 @@ function Stats()
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [firstRender, setFirstRender] = useState(true)
     const [isCollapse, setIsCollapse] = useState(false)
+    const [filters, setFilters] = useState(new Map())
+    const [textFilters, setTextFilters] = useState(new Map())
+    const [subCatFilter, setSubCatFilter] = useState(new Map())
 
     const transactionsTableRef = useRef(null);
     const transactionColRef = useRef(null);
@@ -57,6 +60,13 @@ function Stats()
         }
         setFirstRender((prev) => !prev)
       }
+
+      console.log(filters)
+      filterTableByDate()
+      console.log(textFilters)
+      filterColumnByTextWithCondition()
+      console.log(subCatFilter)
+      filterSubcategoryColumnByText()
     })
 
     var visibleRows = []
@@ -108,23 +118,99 @@ function Stats()
       visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
     }
 
-    function filterTableByDate() {
+    function addDateFilter() {
       const dateFrom = new Date(document.getElementById("table-search-date-from").value)
       const dateTo = new Date(document.getElementById("table-search-date-to").value)
-      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-      
-      visibleRows = []
-      for (let i = 1; i < tr.length; i++) {
-        const tdDate = new Date(tr[i].getElementsByTagName("td")[0].textContent);
-        if((tdDate >= dateFrom) && (tdDate <= dateTo)) {
-          tr[i].style.display = "";
-          visibleRows.push(i);
+      filters.clear()
+      setFilters(new Map(filters.set(crypto.randomUUID(), [dateFrom, dateTo])))
+    }
+
+    function filterTableByDate() {
+      filters.forEach((v,k) => {
+        const dateFrom = v[0];
+        const dateTo = v[1];
+        const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
+        
+        visibleRows = []
+        for (let i = 1; i < tr.length; i++) {
+          const tdDate = new Date(tr[i].getElementsByTagName("td")[0].textContent);
+          if((tdDate >= dateFrom) && (tdDate <= dateTo)) {
+            tr[i].style.display = "";
+            visibleRows.push(i);
+          }
+          else {
+            tr[i].style.display = "none";
+          }
         }
-        else {
-          tr[i].style.display = "none";
+        console.log("visibleRows count:" + visibleRows.length)
+      })
+    }
+
+    function addColumnFilter() {
+      const filterText = document.getElementById("search-box-ad-info").value.toUpperCase()
+      const searchType = document.getElementById("drop-down-search-type-ad-info-1").options.selectedIndex;
+      setTextFilters(new Map(textFilters.set(crypto.randomUUID(), [filterText, searchType])))
+    }
+
+    function filterColumnByTextWithCondition() {
+      textFilters.forEach((v,k) => {
+        const filterText = v[0];
+        const searchType = v[1];
+        const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
+        
+        let indexesToDrop = []
+        console.log("Iterating through " + visibleRows.length + " elements of visibleRows")
+        for (let i = 0; i < visibleRows.length; i++) {
+          const idx = visibleRows[i]
+          const td_info_1 = tr[idx].getElementsByTagName("td")[5];
+
+          if (td_info_1) {
+            const tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
+
+            if ((tdInfo1Value.length > 0) && (tdInfo1Value.toUpperCase().indexOf(filterText) > -1)) {
+              if (searchType !== 0) {
+                tr[idx].style.display = "none";
+                indexesToDrop.push(idx)
+              }
+            } else {
+              if (searchType === 0) {
+                tr[idx].style.display = "none";
+                indexesToDrop.push(idx)
+              }
+            }
+          }
         }
-      }
-      console.log("visibleRows count:" + visibleRows.length)
+        console.log("indexesToDrop:" + indexesToDrop)
+        visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
+        console.log("visibleRows count after filter:" + visibleRows.length)
+      })
+    }
+
+    function addSubcategoryColumnFilter() {
+      const filterText = "ZAMAWIANE";
+      textFilters.clear();
+      setSubCatFilter(new Map(subCatFilter.set(crypto.randomUUID(), [filterText])))
+    }
+
+    function filterSubcategoryColumnByText(event) {
+      subCatFilter.forEach((v,k) => {
+        const filterText = v[0];
+        const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
+        
+        let indexesToDrop = []
+        for (let i = 0; i < visibleRows.length; i++) {
+          const idx = visibleRows[i]
+          const td = tr[idx].getElementsByTagName("td")[3];
+          if (td) {
+            const tdValue = td.textContent || td.innerText;
+            if (tdValue.toUpperCase().indexOf(filterText) === -1){
+              tr[idx].style.display = "none";
+              indexesToDrop.push(idx)
+            }
+          }
+        }
+        visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
+      })
     }
 
     function filterTableByTransactionType() {
@@ -148,38 +234,6 @@ function Stats()
           else tr[i].style.display = "none";
         else tr[i].style.display = "";
       }
-    }
-
-    function filterColumnByTextWithCondition() {
-      const filter = document.getElementById("search-box-ad-info").value.toUpperCase()
-      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-      var searchType = document.getElementById("drop-down-search-type-ad-info-1").options.selectedIndex;
-
-      let indexesToDrop = []
-      console.log("Iterating through " + visibleRows.length + " elements of visibleRows")
-      for (let i = 0; i < visibleRows.length; i++) {
-        const idx = visibleRows[i]
-        const td_info_1 = tr[idx].getElementsByTagName("td")[5];
-
-        if (td_info_1) {
-          const tdInfo1Value = td_info_1.textContent || td_info_1.innerText;
-
-          if ((tdInfo1Value.length > 0) && (tdInfo1Value.toUpperCase().indexOf(filter) > -1)) {
-            if (searchType !== 0) {
-              tr[idx].style.display = "none";
-              indexesToDrop.push(idx)
-            }
-          } else {
-            if (searchType === 0) {
-              tr[idx].style.display = "none";
-              indexesToDrop.push(idx)
-            }
-          }
-        }
-      }
-      console.log("indexesToDrop:" + indexesToDrop)
-      visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
-      console.log("visibleRows count after filter:" + visibleRows.length)
     }
 
     function filterExcludedTransactions() {
@@ -307,36 +361,53 @@ function Stats()
             </Row>
           </Col>
           <Col className='border shadow-sm ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
-            <Row className='mt-3'>
+            <Row className='mt-2'>
               <Col>
-                <Button variant='primary' onClick={() => setIsCollapse(!isCollapse)} aria-expanded={isCollapse} aria-controls="statsCol">&lt; &lt;</Button>
+                <Button
+                  className='btn-sm rounded-circle'
+                  variant='outline-primary'
+                  onClick={() => setIsCollapse(!isCollapse)}
+                  aria-expanded={isCollapse}
+                  aria-controls="statsCol">
+                    &#11160;
+                </Button>
               </Col>
             </Row>
-            <Row className="mt-3">
+            <Row className="mt-2">
               <Col>
-                <input type='text' className="form-control" id='view-name-input' placeholder='Enter view name...'/>
+                <input type='text' className="form-control form-control-sm" id='view-name-input' placeholder='Enter view name...'/>
               </Col>
               <Col>
-                <button onClick={calculateView} className="btn btn-primary">Calculate View</button>
-              </Col>
-            </Row>
-            <Row className='mt-3'>
-              <Col>
-                <input type='text' className="form-control" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
+                <button onClick={calculateView} className="btn btn-primary btn-sm">Calculate View</button>
               </Col>
             </Row>
-            <Row className='mt-3'>
+            <Row className='mt-2'>
               <Col>
-                <input type="date" className='form-control' id="table-search-date-from"></input>
-              </Col>
-              <Col>
-                <input type="date" className='form-control' id="table-search-date-to"></input>
-              </Col>
-              <Col>
-                <button onClick={filterTableByDate} className="btn btn-primary">Filter</button>
+                <input type='text' className="form-control form-control-sm" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
               </Col>
             </Row>
-            <Row className='mt-3 mb-3'>
+            <Row className='mt-2'>
+              <Col>
+                <input type="date" className='form-control form-control-sm' id="table-search-date-from"></input>
+              </Col>
+              <Col>
+                <input type="date" className='form-control form-control-sm' id="table-search-date-to"></input>
+              </Col>
+              <Col>
+                <button onClick={addDateFilter} className="btn btn-primary btn-sm">Filter</button>
+              </Col>
+            </Row>
+            <Row>
+              <ul>
+                {[filters.keys()].map(fk => <li>Item x</li>)}
+              </ul>
+            </Row>
+            <Row>
+              <ul>
+                {[textFilters.keys()].map(fk => <li>Item y</li>)}
+              </ul>
+            </Row>
+            <Row className='mt-2 mb-2'>
               <form>
                 <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
                 <label className='form-check-label me-3'>All</label>
@@ -357,25 +428,40 @@ function Stats()
                     <th>Category</th>
                     <th>
                       Subcategory
-                      <input id="column-search-input-subcat" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                      <select id="drop-down-subcategory">
+                        <option>Zamawiane</option>
+                      </select>
+                    <button className="btn btn-primary btn-sm" onClick={addSubcategoryColumnFilter}>Filter</button>
                     </th>
                     <th>
                       Description
-                      <input id="column-search-input-desc" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                      <input
+                        className='form-control form-control-sm'
+                        id="column-search-input-desc"
+                        type="text"
+                        placeholder='Search...'
+                        onKeyUp={event => filterColumnByText(event)}
+                      />
                     </th>
                     <th>
                       Additional info 1
-                      <input type="text" id="search-box-ad-info" placeholder='Search...'/>
+                      <input className='form-control form-control-sm' type="text" id="search-box-ad-info" placeholder='Search...'/>
                       <select id="drop-down-search-type-ad-info-1">
                         <option>contains</option>
                         <option>doesn't contain</option>
                       </select>
-                      <input type="submit" value="Filter" onClick={filterColumnByTextWithCondition}/>
+                      <button className="btn btn-primary btn-sm" onClick={addColumnFilter}>Filter</button>
                     </th>
                     <th>Additional info 2</th>
                     <th>
                       Sender
-                      <input id="column-search-input-sender" type="text" placeholder='Search...' onKeyUp={event => filterColumnByText(event)}/>
+                      <input
+                        className='form-control form-control-sm'
+                        id="column-search-input-sender"
+                        type="text"
+                        placeholder='Search...'
+                        onKeyUp={event => filterColumnByText(event)}
+                      />
                     </th>
                     <th>Receiver</th>
                     <th>Type</th>
