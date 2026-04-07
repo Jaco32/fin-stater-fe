@@ -39,6 +39,16 @@ export function parseTransactions(transactions) {
     }
 }
 
+function switchView(event) {
+    const viewToSet = event.target.parentNode.getElementsByTagName("td")[6].textContent
+    const urlPart = "stats/view/switch/" + viewToSet
+    console.log("Sending '" + urlPart + "'")
+    let xhr = new XMLHttpRequest()
+    xhr.open('POST', process.env.REACT_APP_BACKEND_URL + urlPart, false)
+    xhr.setRequestHeader('mode', 'no-cors');
+    xhr.send(null)
+}
+
 export function parseOverallStats(overallStats)
 {
     const overallStatsTBody = [];
@@ -46,7 +56,7 @@ export function parseOverallStats(overallStats)
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
         for (let i = 0; i < overallStats.length; i++) {
             if(overallStats[i].from_date !== null) {
-                overallStatsTBody.push(<tr>
+                overallStatsTBody.push(<tr onClick={event => switchView(event)}>
                     <td>{overallStats[i].from_date.substr(0, 10)}</td>
                     <td>{overallStats[i].to.substr(0, 10)}</td>
                     <td>{plnFormatter.format(overallStats[i].income.toFixed(2))}</td>
@@ -116,7 +126,11 @@ export function mapSubcategories(subCategory) {
         case "AUTO_SERWIS":
             return "Serwis";
         case "AUTO_OTHER":
-            return "Pozostałe"
+            return "Pozostałe";
+        case "OPLATY_SUBSKRYPCJE":
+            return "Subskrypcje";
+        case "OPLATY_OTHER":
+            return "Pozostałe";
         default:
             return "Pozostałe";
     }

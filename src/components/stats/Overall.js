@@ -1,7 +1,7 @@
 function Overall({stOverall}) {
 
     return(
-        <table className="table table-sm">
+        <table className="table table-sm table-hover">
             <thead className="table-primary">
                 <tr>
                     <th>From</th>
