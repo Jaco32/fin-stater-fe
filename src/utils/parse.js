@@ -79,8 +79,8 @@ export function mapCategories(category) {
             return "Jedzenie";
         case "DZIECI":
             return "Dzieci";
-        case "AUTO":
-            return "Samochód";
+        case "TRANSPORT":
+            return "Transport";
         case "CIALO":
             return "Cialo";
         case "BANKOMAT":
@@ -121,10 +121,14 @@ export function mapSubcategories(subCategory) {
             return "Beauty";
         case "CIALO_OTHER":
             return "Pozostałe";
-        case "AUTO_PALIWO":
-            return "Paliwo"
-        case "AUTO_SERWIS":
-            return "Serwis";
+        case "TRANSPORT_AUTO_PALIWO":
+            return "Auto - Paliwo"
+        case "TRANSPORT_AUTO_SERWIS":
+            return "Auto - Serwis";
+        case "TRANSPORT_PARKING":
+            return "Parkingi"
+        case "TRANSPORT_BILETY":
+            return "Bilety";            
         case "AUTO_OTHER":
             return "Pozostałe";
         case "OPLATY_SUBSKRYPCJE":
