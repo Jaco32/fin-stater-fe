@@ -7,6 +7,10 @@ function SignIn()
 
     const navigate = useNavigate();
 
+    function addSessionCookie() {
+        document.cookie = "session=FinStat User Session; expires=Sat, 06 Jun 2026 12:45:00 UTC"
+    }
+
     function handleSignIn() {
         // Get form data
         const form = document.getElementById('id_sign_in_form');
@@ -19,10 +23,14 @@ function SignIn()
         });
 
         var xhr = new XMLHttpRequest();
-        const loginUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/login/' + data['name-enter-login-input'] + "/" + data['name-enter-psw-input']
+        const creds = [data['name-enter-login-input'], data['name-enter-psw-input']]
+        const loginUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/login' 
         xhr.open("POST", loginUserUrl, false);
         xhr.setRequestHeader('mode', 'no-cors');
-        xhr.send(null);
+        xhr.send(creds.toString());
+
+        addSessionCookie()
+
         navigate('/stats')
     }
 
