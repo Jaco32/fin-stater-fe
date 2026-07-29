@@ -17,11 +17,13 @@ function SignUp() {
         formData.forEach((value, key) => {
             data[key] = value;
         });
+        
         var xhr = new XMLHttpRequest();
-        const createUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/create/' + data['name-set-login-input'] + "/" + data['name-set-psw-input']
+        const creds = btoa(data['name-set-login-input'] + ":" + data['name-set-psw-input'])
+        const createUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/create'
         xhr.open("POST", createUserUrl, false);
         xhr.setRequestHeader('mode', 'no-cors');
-        xhr.send(null);
+        xhr.send(creds);
         navigate('/upload_transactions')
     }
 
