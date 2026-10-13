@@ -3,19 +3,25 @@ import Overall from './stats/Overall';
 import Categorized from './stats/Categorized';
 import Monthly from './stats/Monthly';
 import Avarage from './stats/Avarage';
+
 import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
+
 import {
   parseTransactions,
   parseAvarageStats,
   parseOverallStats,
 } from '../utils/parse';
+
 import {
   getOverallStatBarChartData,
   getCategorizedStatBarChartData,
   getMonthlyStatBarChartData,
   getMonthlyStatLineChartData
 } from '../utils/charts';
+
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import {
   Chart,
   Legend,
@@ -29,6 +35,7 @@ import {
   Title
 } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -36,7 +43,7 @@ import Button from 'react-bootstrap/Button';
 
 function Stats()
 {
-    console.log("Rendering - Stats");
+    console.log("Stats - Rendering");
 
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [firstRender, setFirstRender] = useState(true)
@@ -48,6 +55,8 @@ function Stats()
     const transactionsTableRef = useRef(null);
     const transactionColRef = useRef(null);
     const lastStatColRow = useRef(null);
+
+    const callingLocation = useLocation()
 
     useEffect(() => {
       console.log("Stats component - calling useEffect");
@@ -275,7 +284,7 @@ function Stats()
       setTransactionExclusion((prev) => !prev)
     }
 
-    const rawTransactions = getTransactionsSynch()
+    const rawTransactions = getTransactionsSynch(callingLocation)
     const parsedTransactions = parseTransactions(rawTransactions)
     const stats = getStatsSynch()
     const statsOverall = parseOverallStats(stats.stat)

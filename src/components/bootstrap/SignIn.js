@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 function SignIn()
 {
-    console.log("Rendering - SignIn")
+    console.log("SignIn - Rendering")
 
     const navigate = useNavigate();
 
-    function addSessionCookie() {
-        document.cookie = "session=FinStat User Session; expires=Sat, 06 Jun 2026 12:45:00 UTC"
+    function addSessionCookie(cookie) {
+        document.cookie = "session-id=" + cookie.value
     }
 
     function handleSignIn() {
@@ -23,15 +23,19 @@ function SignIn()
         });
 
         var xhr = new XMLHttpRequest();
-        const creds = [data['name-enter-login-input'], data['name-enter-psw-input']]
-        const loginUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/login' 
+        const creds = btoa(data['name-enter-login-input'] + ":" + data['name-enter-psw-input'])
+        const loginUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/login'
         xhr.open("POST", loginUserUrl, false);
-        xhr.setRequestHeader('mode', 'no-cors');
-        xhr.send(creds.toString());
-
-        addSessionCookie()
-
-        navigate('/stats')
+        xhr.setRequestHeader('Authorization', 'Basic ' + creds)
+        xhr.send(null);
+        
+        if (xhr.status === 200) navigate('/stats', {
+            state: {
+                username: data['name-enter-login-input'],
+                password: data['name-enter-psw-input']
+            },
+            replace: true
+        });
     }
 
     return (

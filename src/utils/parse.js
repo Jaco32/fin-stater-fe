@@ -57,8 +57,8 @@ export function parseOverallStats(overallStats)
         for (let i = 0; i < overallStats.length; i++) {
             if(overallStats[i].from_date !== null) {
                 overallStatsTBody.push(<tr onClick={event => switchView(event)}>
-                    <td>{overallStats[i].from_date.substr(0, 10)}</td>
-                    <td>{overallStats[i].to.substr(0, 10)}</td>
+                    <td>{overallStats[i].fromDate.substr(0, 10)}</td>
+                    <td>{overallStats[i].toDate.substr(0, 10)}</td>
                     <td>{plnFormatter.format(overallStats[i].income.toFixed(2))}</td>
                     <td>{plnFormatter.format(-1*overallStats[i].expenses.toFixed(2))}</td>
                     <td>{plnFormatter.format(overallStats[i].periodBalance.toFixed(2))}</td>
