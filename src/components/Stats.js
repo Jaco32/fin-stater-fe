@@ -406,26 +406,37 @@ function Stats()
             </Row>
             <Row className="mt-2">
               <Col>
-                <input type='text' className="form-control form-control-sm" id='view-name-input' placeholder='Enter view name...'/>
-              </Col>
-              <Col>
-                <button onClick={calculateView} className="btn btn-primary btn-sm">Calculate View</button>
-              </Col>
-            </Row>
-            <Row className='mt-2'>
-              <Col>
-                <input type='text' className="form-control form-control-sm" id='table-search-input' onKeyUp={filterTableByText} placeholder='Search...'/>
+                <form>
+                  <div className='input-group input-group-sm'>
+                    <input type='text' className="form-control form-control-sm" id='view-name-input' placeholder='Podaj nazwę widoku...'/>
+                    <button onClick={calculateView} className="btn btn-primary btn-sm">Stwórz widok</button>
+                  </div>
+                </form>
               </Col>
             </Row>
             <Row className='mt-2'>
               <Col>
-                <input type="date" className='form-control form-control-sm' id="table-search-date-from"></input>
+                <form>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">&#128269;</span>
+                    <input
+                      type='text'
+                      className="form-control form-control-sm"
+                      id='table-search-input'
+                      onKeyUp={filterTableByText}
+                      placeholder='Szukaj...'
+                    />
+                  </div>
+                </form>
               </Col>
               <Col>
-                <input type="date" className='form-control form-control-sm' id="table-search-date-to"></input>
-              </Col>
-              <Col>
-                <button onClick={addDateFilter} className="btn btn-primary btn-sm">Filter</button>
+                <form>
+                  <div className='input-group input-group-sm'>
+                    <input type="date" className='form-control form-control-sm' id="table-search-date-from"/>
+                    <input type="date" className='form-control form-control-sm' id="table-search-date-to"/>
+                    <button onClick={addDateFilter} className="btn btn-primary btn-sm">Filtruj</button>
+                  </div>
+                </form>
               </Col>
             </Row>
             <Row>
@@ -438,14 +449,24 @@ function Stats()
             </Row>
             <Row className='mt-2 mb-2'>
               <form>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-all" onChange={() => addTransactionTypeFilter("radio-all")}/>
-                <label className='form-check-label me-3'>All</label>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-income" onChange={() => addTransactionTypeFilter("radio-income")}/>
-                <label className='form-check-label me-3'>Income</label>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-expenses" onChange={() => addTransactionTypeFilter("radio-expenses")}/>
-                <label className='form-check-label me-3'>Expenses</label>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-excluded" onChange={() => addTransactionTypeFilter("radio-excluded")}/>
-                <label className='form-check-label me-3'>Excluded</label>
+                <div className='input-group input-group-sm'>
+                  <div className='input-group-text'>
+                    <input type="radio" name="tansaction-type-form" id="radio-all" onChange={() => addTransactionTypeFilter("radio-all")}/>
+                  </div>
+                  <label className='form-control form-check-label me-3'>Wszystkie</label>
+                  <div className='input-group-text'>
+                    <input type="radio" name="tansaction-type-form" id="radio-income" onChange={() => addTransactionTypeFilter("radio-income")}/>
+                  </div>
+                  <label className='form-control form-check-label me-3'>Przychody</label>
+                  <div className='input-group-text'>
+                    <input type="radio" name="tansaction-type-form" id="radio-expenses" onChange={() => addTransactionTypeFilter("radio-expenses")}/>
+                  </div>
+                  <label className='form-control form-check-label me-3'>Wydatki</label>
+                  <div className='input-group-text'>
+                    <input type="radio" name="tansaction-type-form" id="radio-excluded" onChange={() => addTransactionTypeFilter("radio-excluded")}/>
+                  </div>
+                  <label className='form-control form-check-label me-3'>Nie uwzględniane</label>
+                </div>
               </form>
             </Row>
             <Row className='overflow-y-auto'>
