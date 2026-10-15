@@ -45,7 +45,13 @@ function Header() {
                     xhr.setRequestHeader('Content-Type', 'text/csv');
                 }
                 xhr.send(value);
-                navigate("/stats")
+                navigate("/stats", {
+                    state: {
+                        username: 'latest0919',
+                        password: 'latest0919'
+                    },
+                    replace: true
+                })
         });
     }
 

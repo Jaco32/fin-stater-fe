@@ -43,12 +43,17 @@ import Button from 'react-bootstrap/Button';
 
 function Stats()
 {
-    console.log("Stats - Rendering");
+    console.log("Stats - Rendering - entered");
 
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
     const [firstRender, setFirstRender] = useState(true)
     const [isCollapse, setIsCollapse] = useState(false)
-    const [filters, setFilters] = useState(new Map())
+    
+    const [dateFilters, setDateFilters] = useState(new Map())
+    console.log("Stats - Rendering - current dateFilters:");
+    for (const f of dateFilters.entries()) console.log(f);
+    
+    const [transactionTypeFilter, setTransactionTypeFilter] = useState("")
     const [textFilters, setTextFilters] = useState(new Map())
     const [subCatFilter, setSubCatFilter] = useState(new Map())
 
@@ -70,15 +75,17 @@ function Stats()
         setFirstRender((prev) => !prev)
       }
 
-      console.log(filters)
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
+      for (let i = 1; i < tr.length; i++) visibleRows.push(i);
+
       filterTableByDate()
-      console.log(textFilters)
-      filterColumnByTextWithCondition()
-      console.log(subCatFilter)
-      filterSubcategoryColumnByText()
+      filterTableByTransactionType()
+      //filterColumnByTextWithCondition()
+      //filterSubcategoryColumnByText()
     })
 
     var visibleRows = []
+
     function filterTableByText() {
       visibleRows = []
       const filter = document.getElementById("table-search-input").value.toUpperCase()
@@ -128,30 +135,46 @@ function Stats()
     }
 
     function addDateFilter() {
+      console.log("Stats - addDateFilter - entered");
+
       const dateFrom = new Date(document.getElementById("table-search-date-from").value)
       const dateTo = new Date(document.getElementById("table-search-date-to").value)
-      filters.clear()
-      setFilters(new Map(filters.set(crypto.randomUUID(), [dateFrom, dateTo])))
+      console.log("Stats - addDateFilter - dateFrom: " + dateFrom + ", dateTo: " + dateTo);
+      console.log("Stats - addDateFilter - current dateFilters:");
+
+      for (const dateFilter of dateFilters.entries()) console.log(dateFilter);
+      const newFilters = new Map();
+      newFilters.set("Date Filter 1", [dateFrom, dateTo]);
+      setDateFilters(newFilters);
+    }
+
+    function addTransactionTypeFilter(id) {
+      console.log("Stats - addTransactionTypeFilter - entered, id: " + id);
+      if (document.getElementById(id).checked) setTransactionTypeFilter(id);
+      else setTransactionTypeFilter(""); 
     }
 
     function filterTableByDate() {
-      filters.forEach((v,k) => {
+      console.log("Stats - filterTableByDate - entered");
+
+      dateFilters.forEach((v,k) => {
         const dateFrom = v[0];
         const dateTo = v[1];
         const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-        
-        visibleRows = []
-        for (let i = 1; i < tr.length; i++) {
-          const tdDate = new Date(tr[i].getElementsByTagName("td")[0].textContent);
-          if((tdDate >= dateFrom) && (tdDate <= dateTo)) {
-            tr[i].style.display = "";
-            visibleRows.push(i);
-          }
+        let indexesToDrop = []
+        for (let i = 0; i < visibleRows.length; i++) {
+          const tdDate = new Date(tr[visibleRows[i]].getElementsByTagName("td")[0].textContent);
+          if((tdDate >= dateFrom) && (tdDate <= dateTo))
+            tr[visibleRows[i]].style.display = "";
           else {
-            tr[i].style.display = "none";
+            tr[visibleRows[i]].style.display = "none";
+            indexesToDrop.push(i)
           }
         }
-        console.log("visibleRows count:" + visibleRows.length)
+
+        console.log("Stats - filterTableByDate - indexesToDrop: " + indexesToDrop)
+        visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
+        console.log("Stats - filterTableByDate - visibleRows count after filter:" + visibleRows.length)
       })
     }
 
@@ -223,26 +246,25 @@ function Stats()
     }
 
     function filterTableByTransactionType() {
-      const allRadio = document.getElementById("radio-all").checked;
-      const incomeRadio = document.getElementById("radio-income").checked;
-      const expensesRadio = document.getElementById("radio-expenses").checked;
+      console.log("Stats - filterTableByTransactionType - entered");
+
       const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-      
-      visibleRows = []
-      for (let i = 1; i < tr.length; i++) {
-        const tdAmount = parseFloat(tr[i].getElementsByTagName("td")[1].textContent.split(' ')[0].replace(",", "."));
-        if (!allRadio)
-          if (incomeRadio && (tdAmount > 0)) {
-            tr[i].style.display = "";
-            visibleRows.push(i);
-          }
-          else if (expensesRadio && (tdAmount < 0)) {
-            tr[i].style.display = "";
-            visibleRows.push(i);
-          }
-          else tr[i].style.display = "none";
-        else tr[i].style.display = "";
+      let indexesToDrop = []
+      for (let i = 0; i < visibleRows.length; i++) {
+        const tdAmount = parseFloat(tr[visibleRows[i]].getElementsByTagName("td")[1].textContent.split(' ')[0].replace(",", "."));
+        if (transactionTypeFilter === "radio-income" && (tdAmount < 0)) {
+            tr[visibleRows[i]].style.display = "none";
+            indexesToDrop.push(i);
+        }
+        else if (transactionTypeFilter === "radio-expenses" && (tdAmount > 0)) {
+            tr[visibleRows[i]].style.display = "none";
+            indexesToDrop.push(i);
+        }
       }
+
+      console.log("Stats - filterTableByTransactionType - indexesToDrop: " + indexesToDrop)
+      visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
+      console.log("Stats - filterTableByTransactionType - visibleRows count after filter:" + visibleRows.length)
     }
 
     function filterExcludedTransactions() {
@@ -407,24 +429,22 @@ function Stats()
               </Col>
             </Row>
             <Row>
-              <ul>
-                {[filters.keys()].map(fk => <li>Item x</li>)}
-              </ul>
-            </Row>
-            <Row>
-              <ul>
-                {[textFilters.keys()].map(fk => <li>Item y</li>)}
-              </ul>
+                {Array.from(dateFilters, ([key, value]) => (
+                  <span>
+                    {value[0].toLocaleDateString()} - {value[1].toLocaleDateString()}
+                    <button type="button" class="btn-close"></button>
+                  </span>
+                ))}
             </Row>
             <Row className='mt-2 mb-2'>
               <form>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-all" onChange={filterTableByTransactionType}/>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-all" onChange={() => addTransactionTypeFilter("radio-all")}/>
                 <label className='form-check-label me-3'>All</label>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-income" onChange={filterTableByTransactionType}/>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-income" onChange={() => addTransactionTypeFilter("radio-income")}/>
                 <label className='form-check-label me-3'>Income</label>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-expenses" onChange={filterTableByTransactionType}/>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-expenses" onChange={() => addTransactionTypeFilter("radio-expenses")}/>
                 <label className='form-check-label me-3'>Expenses</label>
-                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-excluded" onChange={filterExcludedTransactions}/>
+                <input className="form-check-input me-1" type="radio" name="tansaction-type-form" id="radio-excluded" onChange={() => addTransactionTypeFilter("radio-excluded")}/>
                 <label className='form-check-label me-3'>Excluded</label>
               </form>
             </Row>
