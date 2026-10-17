@@ -46,7 +46,6 @@ function Stats()
     console.log("Stats - Rendering - entered");
 
     const [transactionExclusionTrigger, setTransactionExclusion] = useState(false)
-    const [firstRender, setFirstRender] = useState(true)
     const [isCollapse, setIsCollapse] = useState(false)
     
     const [dateFilters, setDateFilters] = useState(new Map())
@@ -64,20 +63,13 @@ function Stats()
     const callingLocation = useLocation()
 
     useEffect(() => {
-      console.log("Stats component - calling useEffect");
+      console.log("Stats - useEffect - entering");
+
       if (!isCollapse) transactionColRef.current.style.height = (lastStatColRow.current.offsetHeight*3).toString() + 'px';
 
-      if(firstRender) {
-        const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
-        for(const transactionRow of transactionRows) {
-          transactionRow.addEventListener("click", (event) => excludeTransactionFromStats(event))
-        }
-        setFirstRender((prev) => !prev)
-      }
-
-      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-      for (let i = 1; i < tr.length; i++) visibleRows.push(i);
-
+      const transactionRows = transactionsTableRef.current.getElementsByTagName("tr");
+      console.log("Stats - useEffect - number of transaction rows: " + transactionRows.length);
+      for (let i = 1; i <= transactionRows.length; i++) visibleRows.push(i);
       filterTableByDate()
       filterTableByTransactionType()
       //filterColumnByTextWithCondition()
@@ -294,8 +286,8 @@ function Stats()
         window.location.assign("/stats")
     }
 
-    function excludeTransactionFromStats(event) {
-      const dBTransactionsTableId = rawTransactions[event.target.parentNode.rowIndex-1].id
+    function excludeTransactionFromStats() {
+      const dBTransactionsTableId = rawTransactions[window.event.target.parentNode.rowIndex-1].id
       const urlPart = "/transaction/toogleforstats/" + dBTransactionsTableId
       console.log("Sending '" + urlPart + "'")
       let xhr = new XMLHttpRequest()
@@ -307,7 +299,7 @@ function Stats()
     }
 
     const rawTransactions = getTransactionsSynch(callingLocation)
-    const parsedTransactions = parseTransactions(rawTransactions)
+    const parsedTransactions = parseTransactions(rawTransactions, excludeTransactionFromStats)
     const stats = getStatsSynch()
     const statsOverall = parseOverallStats(stats.stat)
     const statsAvarage = parseAvarageStats(stats.statAvarage)

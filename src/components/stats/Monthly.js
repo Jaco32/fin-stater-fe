@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import {
-  mapCategories
-} from '../../utils/parse';
+import { mapCategories } from '../../utils/parse';
+import { filterTableByMonth } from '../../utils/filter'
 
 function Monthly({stPerMonth}) {
 
@@ -30,7 +29,9 @@ function Monthly({stPerMonth}) {
             for (let i = 0; i < monthlyStats.length; i++) {
                 var categorizedMonthly = []
                 for (let j = 0; j < monthlyStats[i].categorizedMonthly.length; j++) {
-                    const mappedCategories = monthlyStats[i].categorizedMonthly.map(categoryItem => categoryItem.category).map(category => mapCategories(category))
+                    const mappedCategories = monthlyStats[i].categorizedMonthly
+                                                .map(categoryItem => categoryItem.category)
+                                                .map(category => mapCategories(category))
                     categorizedMonthly.push(
                         <tr key={j}>
                             <td>{mappedCategories[j]}</td>
@@ -39,14 +40,12 @@ function Monthly({stPerMonth}) {
                     )
                 }
 
-                console.log("monthly stats - inputting - rateOfReturn: " + monthlyStats[i].rateOfReturn)
-
                 let rateOfReturn = ""
                 if (monthlyStats[i].rateOfReturn === "-Infinity") rateOfReturn = "N/A"
                 else rateOfReturn = monthlyStats[i].rateOfReturn.toFixed(0) + " %"
                 monthlyStatsTBody.push(
                 <>
-                    <tr id={i} key={i} onClick={(event) => toogleMonthlyCategorized(event)}>
+                    <tr id={i} key={i} onClick={(event) => filterTableByMonth(event)}>
                         <td>{monthlyStats[i].monthName}</td>
                         <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
                         <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>

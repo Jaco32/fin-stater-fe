@@ -3,6 +3,7 @@ import {
   mapCategories,
   mapSubcategories
 } from '../../utils/parse';
+import { filterTableByTransactionCategory } from '../../utils/filter'
 
 function Categorized({stPerCt}) {
 
@@ -11,7 +12,7 @@ function Categorized({stPerCt}) {
     const [toogle, setToggle] = useState(new Map());
 
     useEffect(() => {
-      console.log("Categorized component - calling useEffect");
+      console.log("Categorized - useEffect - entering");
 
       if(firstRender) {
         if (toogle.size > 0) {
@@ -23,17 +24,6 @@ function Categorized({stPerCt}) {
         setFirstRender((prev) => !prev)
       }
     })
-
-    function filterTableByTransactionCategory(event) {
-      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-      const clickedCategory = event.target.parentNode.getElementsByTagName("td")[1].textContent
-      
-      for (let i = 1; i < tr.length; i++) {
-        const tdCategory = tr[i].getElementsByTagName("td")[2].textContent;
-        if (tdCategory === clickedCategory) tr[i].style.display = "";
-        else tr[i].style.display = "none";
-      }
-    }
 
     function toogleSubcategorized(event) {
       const categoryKey = event.target.parentNode.getElementsByTagName("td")[1].textContent
@@ -56,7 +46,6 @@ function Categorized({stPerCt}) {
             }
             setToggle(initialToogle);
         }
-        console.log(toogle)
 
         for (let i = 0; i < categorizedStats.length; i++) {
           const subcategoriesKeys = Object.keys(categorizedStats[i].subcategoryStat).map(subCategory => mapSubcategories(subCategory));

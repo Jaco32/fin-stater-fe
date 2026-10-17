@@ -1,37 +1,41 @@
-export function parseTransactions(transactions) {
+export function parseTransactions(transactions, toogleFunction) {
     if (transactions !== undefined) {
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
         const transactionsItems = []
         console.log("Parsing " + transactions.length + " transactions")
         for (let i = 0; i < transactions.length; i++) {
             if (transactions[i].usedForCalculation === false) {
-                console.log("Setting transaction " + i + " as not used")
-                transactionsItems.push(<tr key={i} className="table-danger">
-                    <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                    <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
-                    <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
-                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
-                    <td>{transactions[i].description}</td>
-                    <td>{transactions[i].additional_info}</td>
-                    <td>{transactions[i].additional_info_2}</td>
-                    <td>{transactions[i].sender}</td>
-                    <td>{transactions[i].receiver}</td>
-                    <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                </tr>);
+                console.log("parseTransactions - setting transaction " + i + " as not used")
+                transactionsItems.push(
+                    <tr id={"tttr"+i} key={i} className="table-danger" onClick={toogleFunction}>
+                        <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
+                        <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
+                        <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
+                        <td>{mapSubcategories(transactions[i].subcategory)}</td>
+                        <td>{transactions[i].description}</td>
+                        <td>{transactions[i].additional_info}</td>
+                        <td>{transactions[i].additional_info_2}</td>
+                        <td>{transactions[i].sender}</td>
+                        <td>{transactions[i].receiver}</td>
+                        <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
+                    </tr>
+                );
             }
             else {
-                transactionsItems.push(<tr key={i} className="table-light">
-                    <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
-                    <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
-                    <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
-                    <td>{mapSubcategories(transactions[i].subcategory)}</td>
-                    <td>{transactions[i].description}</td>
-                    <td>{transactions[i].additional_info}</td>
-                    <td>{transactions[i].additional_info_2}</td>
-                    <td>{transactions[i].sender}</td>
-                    <td>{transactions[i].receiver}</td>
-                    <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
-                </tr>);
+                transactionsItems.push(
+                    <tr id={"tttr"+i} key={i} className="table-light" onClick={toogleFunction}>
+                        <td style={{whiteSpace: 'nowrap'}}>{transactions[i].date.substr(0, 10)}</td>
+                        <td style={{textAlign: 'center'}}>{plnFormatter.format(transactions[i].amount)}</td>
+                        <td style={{textAlign: 'center'}}>{mapCategories(transactions[i].category)}</td>
+                        <td>{mapSubcategories(transactions[i].subcategory)}</td>
+                        <td>{transactions[i].description}</td>
+                        <td>{transactions[i].additional_info}</td>
+                        <td>{transactions[i].additional_info_2}</td>
+                        <td>{transactions[i].sender}</td>
+                        <td>{transactions[i].receiver}</td>
+                        <td style={{whiteSpace: 'nowrap'}}>{transactions[i].type}</td>
+                    </tr>
+                );
             }
         }
 
