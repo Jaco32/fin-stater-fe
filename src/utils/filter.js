@@ -1,6 +1,6 @@
-export function filterTableByTransactionCategory(event) {
+export function filterTableByTransactionCategory() {
     const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-    const clickedCategory = event.target.parentNode.getElementsByTagName("td")[1].textContent
+    const clickedCategory = window.event.target.parentNode.getElementsByTagName("td")[1].textContent
     
     for (let i = 1; i < tr.length; i++) {
         const tdCategory = tr[i].getElementsByTagName("td")[2].textContent;

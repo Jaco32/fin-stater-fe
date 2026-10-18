@@ -8,20 +8,16 @@ import { filterTableByTransactionCategory } from '../../utils/filter'
 function Categorized({stPerCt}) {
 
     const categorisedTableRef = useRef(null)
-    const [firstRender, setFirstRender] = useState(true)
     const [toogle, setToggle] = useState(new Map());
 
     useEffect(() => {
       console.log("Categorized - useEffect - entering");
 
-      if(firstRender) {
-        if (toogle.size > 0) {
-          const categorisedRowsFilterByCategory = categorisedTableRef.current.getElementsByClassName("filter-by-category");
-          for(const categorisedRow of categorisedRowsFilterByCategory) {
-            categorisedRow.addEventListener("click", (event) => filterTableByTransactionCategory(event))
-          }
+      if (toogle.size > 0) {
+        const categorisedRowsFilterByCategory = categorisedTableRef.current.getElementsByClassName("filter-by-category");
+        for(const categorisedRow of categorisedRowsFilterByCategory) {
+          categorisedRow.addEventListener("click", filterTableByTransactionCategory)
         }
-        setFirstRender((prev) => !prev)
       }
     })
 
@@ -53,17 +49,19 @@ function Categorized({stPerCt}) {
           if (toogle.get(mappedCategories[i]) === true) {
             const subcategoriesValues = Object.values(categorizedStats[i].subcategoryStat);
             for(let j = 0; j < subcategoriesKeys.length; j++) {
-                subcategorizedStatsTBody.push(<tr key={i} className="fs-6">
+                subcategorizedStatsTBody.push(
+                  <tr key={i} className="fs-6">
                     <td></td>
                     <td>{subcategoriesKeys[j]}</td>
                     <td>{plnFormatter.format(subcategoriesValues[j]*-1)}</td>
-                </tr>)
+                  </tr>
+                )
             }
           }
 
           categorizedStatsTBody.push(
             <>
-              <tr key={i}>
+              <tr key={i} onclick={filterTableByTransactionCategory}>
                   <td className="expand-subcategories"
                       onClick={subcategoriesKeys.length ? (event) => toogleSubcategorized(event) : () => {}}
                       style={{ textAlign: 'right'}}
