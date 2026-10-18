@@ -1,15 +1,15 @@
 function Avarage({stAvarage}) {
 
     return (
-        <table className="table table-striped table-bordered table-sm">
+        <table className="table table-striped table-sm">
             <thead className="table-primary">
-                <tr>
+                <tr style={{ fontSize: '12px'}}>
                     <th>Avg. Income</th>
                     <th>Avg. Expense</th>
                     <th>Avg. Savings</th>
                 </tr>
             </thead>
-            <tbody>{stAvarage}</tbody>              
+            <tbody style={{ fontSize: '12px'}}>{stAvarage}</tbody>              
         </table>
     )
 }

@@ -361,29 +361,29 @@ function Stats()
     return (
       <>
       <Header />
-      <Container className='container mt-4 mw-100 small'>
+      <Container className='container ms-2 mt-2 mw-100 small'>
         <Row>
           <Col className={`collapse ${isCollapse ? "" : "show"}`} id='statsCol'>
-            <Row className='border shadow-sm mb-3 pt-2'>
+            <Row className='border shadow-sm rounded-3' style={{ overflow: 'hidden' }}>
               <Overall stOverall={statsOverall}/>
-              {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h1>Overall</h1>}
+              {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h3>Overall</h3>}
             </Row>
-            <Row className='border shadow-sm pt-2'>
+            <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
                 <Avarage stAvarage={statsAvarage}/>
             </Row>
-            <Row className='border shadow-sm mb-3 pt-2'>
+            <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
               <Categorized stPerCt={stats.statCategorized}/>
-              {Object.keys(categorizedBarData).length !== 0 ? <Bar data={categorizedBarData} options={categorizedBarOptions}/> : <h1>Categorized</h1>}
+              {Object.keys(categorizedBarData).length !== 0 ? <Bar data={categorizedBarData} options={categorizedBarOptions}/> : <h3>Categorized</h3>}
             </Row>
-            <Row className='border shadow-sm mb-3 pt-2'>
+            <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
                 <Monthly stPerMonth={stats.statMonth}/>
-                {Object.keys(monthlyStatBarChartData).length !== 0 ? <Bar data={monthlyStatBarChartData} options={monthlyStatBarChartOptions}/> : <h1>Monthly Bar</h1>}
+                {Object.keys(monthlyStatBarChartData).length !== 0 ? <Bar data={monthlyStatBarChartData} options={monthlyStatBarChartOptions}/> : <h3>Monthly Bar</h3>}
             </Row>
-            <Row className='border shadow-sm mb-3 pt-2' ref={lastStatColRow}>
-              {Object.keys(monthlyStatLineChartData).length !== 0 ? <Line data={monthlyStatLineChartData} options={monthlyStatLineChartOptions}/> : <h1>Monthly Line</h1>}
+            <Row className='border shadow-sm mt-2' ref={lastStatColRow}>
+              {Object.keys(monthlyStatLineChartData).length !== 0 ? <Line data={monthlyStatLineChartData} options={monthlyStatLineChartOptions}/> : <h3>Monthly Line</h3>}
             </Row>
           </Col>
-          <Col className='border shadow-sm ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
+          <Col className='border shadow-sm rounded-3 ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
             <Row className='mt-2'>
               <Col>
                 <Button
@@ -461,10 +461,10 @@ function Stats()
                 </div>
               </form>
             </Row>
-            <Row className='overflow-y-auto'>
-              <table id="transactions-table" className="table table-bordered table-hover table-sm">
+            <Row className='overflow-y-auto border rounded-3'>
+              <table id="transactions-table" className="table table-hover table-sm">
                 <thead className="table-primary">
-                  <tr style={{ position: 'sticky', top: 0 }}>
+                  <tr style={{ position: 'sticky', top: 0, fontSize: '12px' }}>
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Category</th>
@@ -509,7 +509,7 @@ function Stats()
                     <th>Type</th>
                   </tr>
                 </thead>
-                <tbody ref={transactionsTableRef}>
+                <tbody ref={transactionsTableRef} style={{ fontSize: '12px' }}>
                   {parsedTransactions}
                 </tbody>
               </table>

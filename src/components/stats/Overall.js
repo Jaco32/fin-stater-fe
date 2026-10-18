@@ -3,17 +3,17 @@ function Overall({stOverall}) {
     return(
         <table className="table table-sm table-hover">
             <thead className="table-primary">
-                <tr>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Income</th>
-                    <th>Expenses</th>
-                    <th>Balance</th>
-                    <th>Excluded</th>
-                    <th>View name</th>
+                <tr style={{ fontSize: '12px' }}>
+                    <th>Widok</th>
+                    <th>Od</th>
+                    <th>Do</th>
+                    <th>Przychód</th>
+                    <th>Wydatki</th>
+                    <th>Dochód</th>
+                    <th>Odliczone</th>
                 </tr>
             </thead>
-            <tbody>{stOverall}</tbody>
+            <tbody style={{ fontSize: '12px'}}>{stOverall}</tbody>
         </table>
     )
 }

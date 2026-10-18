@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import {
   mapCategories,
   mapSubcategories
@@ -7,19 +7,7 @@ import { filterTableByTransactionCategory } from '../../utils/filter'
 
 function Categorized({stPerCt}) {
 
-    const categorisedTableRef = useRef(null)
     const [toogle, setToggle] = useState(new Map());
-
-    useEffect(() => {
-      console.log("Categorized - useEffect - entering");
-
-      if (toogle.size > 0) {
-        const categorisedRowsFilterByCategory = categorisedTableRef.current.getElementsByClassName("filter-by-category");
-        for(const categorisedRow of categorisedRowsFilterByCategory) {
-          categorisedRow.addEventListener("click", filterTableByTransactionCategory)
-        }
-      }
-    })
 
     function toogleSubcategorized(event) {
       const categoryKey = event.target.parentNode.getElementsByTagName("td")[1].textContent
@@ -85,13 +73,13 @@ function Categorized({stPerCt}) {
     return (
         <table className="table table-striped table-sm table-hover">
             <thead className="table-primary">
-                <tr>
+                <tr style={{ fontSize: '12px'}}>
                     <th></th>
                     <th>Category</th>
                     <th>Expenses</th>
                 </tr>
             </thead>
-            <tbody ref={categorisedTableRef}>{statsPerCategory}</tbody>
+            <tbody style={{ fontSize: '12px'}}>{statsPerCategory}</tbody>
         </table>
     )
 }

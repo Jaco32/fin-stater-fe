@@ -78,9 +78,9 @@ function Monthly({stPerMonth}) {
     const statsPerMonth = parseMonthlyStats(stPerMonth)
 
     return (
-        <table className="table table-striped table-bordered table-hover table-sm">
+        <table className="table table-striped table-hover table-sm">
             <thead className="table-primary">
-                <tr>
+                <tr style={{ fontSize: '12px'}}>
                     <th>Month</th>
                     <th>Income</th>
                     <th>Expenses</th>
@@ -88,7 +88,7 @@ function Monthly({stPerMonth}) {
                     <th>Stopa zwrotu</th>
                 </tr>
             </thead>
-            <tbody>{statsPerMonth}</tbody>
+            <tbody style={{ fontSize: '12px'}}>{statsPerMonth}</tbody>
         </table>
     )
 }
