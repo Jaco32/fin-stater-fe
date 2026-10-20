@@ -364,7 +364,7 @@ function Stats()
       <Container className='container ms-2 mt-2 mw-100 small'>
         <Row>
           <Col className={`collapse ${isCollapse ? "" : "show"}`} id='statsCol'>
-            <Row className='border shadow-sm rounded-3' style={{ overflow: 'hidden' }}>
+            <Row className='border shadow-sm rounded-3 border-secondary' style={{ overflow: 'hidden' }}>
               <Overall stOverall={statsOverall}/>
               {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h3>Overall</h3>}
             </Row>
