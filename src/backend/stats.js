@@ -14,7 +14,7 @@ export function getTransactionsSynch(callingLocation) {
 
 export function getStatsSynch()
 {
-    console.log("getStatsSynch - entered")
+    console.log("Stats - getStatsSynch - entered")
 
     let stats = {};
 
@@ -35,12 +35,6 @@ export function getStatsSynch()
     xhr2.setRequestHeader('mode', 'no-cors');
     xhr2.send(null);
     stats.statCategorized = JSON.parse(xhr2.responseText)
-
-    let xhr3 = new XMLHttpRequest();
-    xhr3.open("GET", process.env.REACT_APP_BACKEND_URL + '/stat/avarage', false);
-    xhr3.setRequestHeader('mode', 'no-cors');
-    xhr3.send(null);
-    stats.statAvarage = JSON.parse(xhr3.responseText)
 
     console.log("getStatsSynch - exiting")
 

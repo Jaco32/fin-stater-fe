@@ -20,7 +20,13 @@ function UploadTransactions() {
                     xhr.setRequestHeader('Content-Type', 'text/csv');
                 }
                 xhr.send(value);
-                navigate("/stats")
+                navigate("/stats", {
+                    state: {
+                        username: 'latest0902',
+                        password: 'latest0902'
+                    },
+                    replace: true
+                })
         });
     }
 

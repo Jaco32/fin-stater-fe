@@ -47,8 +47,8 @@ function Header() {
                 xhr.send(value);
                 navigate("/stats", {
                     state: {
-                        username: 'latest0919',
-                        password: 'latest0919'
+                        username: 'latest0902',
+                        password: 'latest0902'
                     },
                     replace: true
                 })

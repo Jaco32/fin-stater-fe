@@ -2,7 +2,6 @@ import Header from './bootstrap/Header';
 import Overall from './stats/Overall';
 import Categorized from './stats/Categorized';
 import Monthly from './stats/Monthly';
-import Avarage from './stats/Avarage';
 
 import { getTransactionsSynch, getStatsSynch } from '../backend/stats';
 
@@ -302,7 +301,6 @@ function Stats()
     const parsedTransactions = parseTransactions(rawTransactions, excludeTransactionFromStats)
     const stats = getStatsSynch()
     const statsOverall = parseOverallStats(stats.stat)
-    const statsAvarage = parseAvarageStats(stats.statAvarage)
 
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title);
 
@@ -367,9 +365,6 @@ function Stats()
             <Row className='border shadow-sm rounded-3 border-secondary' style={{ overflow: 'hidden' }}>
               <Overall stOverall={statsOverall}/>
               {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h3>Overall</h3>}
-            </Row>
-            <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
-                <Avarage stAvarage={statsAvarage}/>
             </Row>
             <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
               <Categorized stPerCt={stats.statCategorized}/>

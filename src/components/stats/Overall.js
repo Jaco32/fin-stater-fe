@@ -11,6 +11,9 @@ function Overall({stOverall}) {
                     <th className="text-secondary">Wydatki</th>
                     <th className="text-secondary">Dochód</th>
                     <th className="text-secondary">Odliczone</th>
+                    <th className="text-secondary">Przychód / m-c</th>
+                    <th className="text-secondary">Wydatki / m-c</th>
+                    <th className="text-secondary">Dochód / m-c</th>
                 </tr>
             </thead>
             <tbody style={{ fontSize: '12px'}}>{stOverall}</tbody>

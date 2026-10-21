@@ -68,6 +68,9 @@ export function parseOverallStats(overallStats)
                     <td>{plnFormatter.format(-1*overallStats[i].expenses.toFixed(2))}</td>
                     <td>{plnFormatter.format(overallStats[i].periodBalance.toFixed(2))}</td>
                     <td>{plnFormatter.format(overallStats[i].excluded.toFixed(2))}</td>
+                    <td>{plnFormatter.format(overallStats[i].avarageIncome.toFixed(2))}</td>
+                    <td>{plnFormatter.format(-1*overallStats[i].avarageExpenses.toFixed(2))}</td>
+                    <td>{plnFormatter.format(overallStats[i].avarageBalance.toFixed(2))}</td>
                 </tr>)
             }
         }
