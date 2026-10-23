@@ -64,9 +64,15 @@ export function parseOverallStats(overallStats)
                     <td>{overallStats[i].viewName}</td>
                     <td>{overallStats[i].fromDate.substr(0, 10)}</td>
                     <td>{overallStats[i].toDate.substr(0, 10)}</td>
-                    <td>{plnFormatter.format(overallStats[i].income.toFixed(2))}</td>
-                    <td>{plnFormatter.format(-1*overallStats[i].expenses.toFixed(2))}</td>
-                    <td>{plnFormatter.format(overallStats[i].periodBalance.toFixed(2))}</td>
+                    <td style={{ color: 'rgb(75, 192, 192)'}}>
+                        <b>{plnFormatter.format(overallStats[i].income.toFixed(2))}</b>
+                    </td>
+                    <td style={{ color: 'rgb(255, 99, 132)'}}>
+                        <b>{plnFormatter.format(-1*overallStats[i].expenses.toFixed(2))}</b>
+                    </td>
+                    <td style={{ color: 'rgb(53, 162, 235)'}}>
+                        <b>{plnFormatter.format(overallStats[i].periodBalance.toFixed(2))}</b>
+                    </td>
                     <td>{plnFormatter.format(overallStats[i].excluded.toFixed(2))}</td>
                     <td>{plnFormatter.format(overallStats[i].avarageIncome.toFixed(2))}</td>
                     <td>{plnFormatter.format(-1*overallStats[i].avarageExpenses.toFixed(2))}</td>

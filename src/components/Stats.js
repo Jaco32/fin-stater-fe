@@ -366,11 +366,11 @@ function Stats()
               <Overall stOverall={statsOverall}/>
               {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h3>Overall</h3>}
             </Row>
-            <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
+            <Row className='border shadow-sm rounded-3 border-secondary mt-2' style={{ overflow: 'hidden' }}>
               <Categorized stPerCt={stats.statCategorized}/>
               {Object.keys(categorizedBarData).length !== 0 ? <Bar data={categorizedBarData} options={categorizedBarOptions}/> : <h3>Categorized</h3>}
             </Row>
-            <Row className='border shadow-sm rounded-3 mt-2' style={{ overflow: 'hidden' }}>
+            <Row className='border shadow-sm rounded-3 border-secondary mt-2' style={{ overflow: 'hidden' }}>
                 <Monthly stPerMonth={stats.statMonth}/>
                 {Object.keys(monthlyStatBarChartData).length !== 0 ? <Bar data={monthlyStatBarChartData} options={monthlyStatBarChartOptions}/> : <h3>Monthly Bar</h3>}
             </Row>

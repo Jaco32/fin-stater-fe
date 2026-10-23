@@ -40,7 +40,7 @@ function Categorized({stPerCt}) {
                 subcategorizedStatsTBody.push(
                   <tr key={i} className="fs-6">
                     <td></td>
-                    <td>{subcategoriesKeys[j]}</td>
+                    <td style={{ textIndent: '20px' }}>{subcategoriesKeys[j]}</td>
                     <td>{plnFormatter.format(subcategoriesValues[j]*-1)}</td>
                   </tr>
                 )
@@ -50,11 +50,10 @@ function Categorized({stPerCt}) {
           categorizedStatsTBody.push(
             <>
               <tr key={i} onclick={filterTableByTransactionCategory}>
-                  <td className="expand-subcategories"
-                      onClick={subcategoriesKeys.length ? (event) => toogleSubcategorized(event) : () => {}}
-                      style={{ textAlign: 'right'}}
+                  <td onClick={subcategoriesKeys.length ? (event) => toogleSubcategorized(event) : () => {}}
+                      style={{ textAlign: 'right', cursor: 'pointer'}}
                   >
-                    {subcategoriesKeys.length ? (<>&#129055;</>) : ''}
+                    {subcategoriesKeys.length ? (<>&#10133;</>) : ''}
                   </td>
                   <td className="filter-by-category">{mappedCategories[i]}</td>
                   <td className="filter-by-category">{plnFormatter.format(-1*categorizedStats[i].expense.toFixed(2))}</td>
@@ -75,8 +74,8 @@ function Categorized({stPerCt}) {
             <thead className="table-primary">
                 <tr style={{ fontSize: '12px'}}>
                     <th></th>
-                    <th>Category</th>
-                    <th>Expenses</th>
+                    <th className="text-secondary">Kategoria</th>
+                    <th className="text-secondary">Wydatki</th>
                 </tr>
             </thead>
             <tbody style={{ fontSize: '12px'}}>{statsPerCategory}</tbody>

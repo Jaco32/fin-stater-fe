@@ -47,9 +47,15 @@ function Monthly({stPerMonth}) {
                 <>
                     <tr id={i} key={i} onClick={(event) => filterTableByMonth(event)}>
                         <td>{monthlyStats[i].monthName}</td>
-                        <td>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</td>
-                        <td>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</td>
-                        <td>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</td>
+                        <td style={{ color: 'rgb(75, 192, 192)'}}>
+                            <b>{plnFormatter.format(monthlyStats[i].income.toFixed(2))}</b>
+                        </td>
+                        <td style={{ color: 'rgb(255, 99, 132)'}}>
+                            <b>{plnFormatter.format(-1*monthlyStats[i].expenses.toFixed(2))}</b>
+                        </td>
+                        <td style={{ color: 'rgb(53, 162, 235)'}}>
+                            <b>{plnFormatter.format(monthlyStats[i].balance.toFixed(2))}</b>
+                        </td>
                         <td>{rateOfReturn}</td>
                     </tr>
                     {toogle.get(monthlyStats[i].monthName) &&
@@ -81,11 +87,11 @@ function Monthly({stPerMonth}) {
         <table className="table table-striped table-hover table-sm">
             <thead className="table-primary">
                 <tr style={{ fontSize: '12px'}}>
-                    <th>Month</th>
-                    <th>Income</th>
-                    <th>Expenses</th>
-                    <th>Balance</th>
-                    <th>Stopa zwrotu</th>
+                    <th className="text-secondary">Miesiąc</th>
+                    <th className="text-secondary">Przychód</th>
+                    <th className="text-secondary">Wydatki</th>
+                    <th className="text-secondary">Dochód</th>
+                    <th className="text-secondary">Stopa zwrotu</th>
                 </tr>
             </thead>
             <tbody style={{ fontSize: '12px'}}>{statsPerMonth}</tbody>
