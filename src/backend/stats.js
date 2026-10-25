@@ -2,7 +2,8 @@ export function getTransactionsSynch(callingLocation) {
     console.log("getTransactionsSynch - entered")
 
     let xhr = new XMLHttpRequest();
-    const creds = btoa(callingLocation.state.username + ":" + callingLocation.state.password); 
+    //const creds = btoa(callingLocation.state.username + ":" + callingLocation.state.password);
+    const creds = btoa('latest0902' + ":" + 'latest0902');
     xhr.open("GET", process.env.REACT_APP_BACKEND_URL + '/transaction', false);
     xhr.setRequestHeader('Authorization', 'Basic ' + creds)
     xhr.send(null);

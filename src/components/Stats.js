@@ -359,9 +359,9 @@ function Stats()
     return (
       <>
       <Header />
-      <Container className='container ms-2 mt-2 mw-100 small'>
+      <Container className='mt-2 mw-100 small'>
         <Row>
-          <Col className={`collapse ${isCollapse ? "" : "show"}`} id='statsCol'>
+          <Col className={`collapse ${isCollapse ? "ms-2" : "ms-2 show"}`} id='statsCol'>
             <Row className='border shadow-sm rounded-3 border-secondary' style={{ overflow: 'hidden' }}>
               <Overall stOverall={statsOverall}/>
               {Object.keys(overallBarData).length !== 0 ? <Bar data={overallBarData} options={overallBarOptions}/> : <h3>Overall</h3>}
@@ -378,20 +378,18 @@ function Stats()
               {Object.keys(monthlyStatLineChartData).length !== 0 ? <Line data={monthlyStatLineChartData} options={monthlyStatLineChartOptions}/> : <h3>Monthly Line</h3>}
             </Row>
           </Col>
-          <Col className='border shadow-sm rounded-3 ms-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
-            <Row className='mt-2'>
-              <Col>
+          <Col className='border shadow-sm rounded-3 border-secondary ms-2 me-2' ref={transactionColRef} style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
+            <Row className="mt-2">
+              <Col className='col-xxl-1'>
                 <Button
                   className='btn-sm rounded-circle'
                   variant='outline-primary'
                   onClick={() => setIsCollapse(!isCollapse)}
                   aria-expanded={isCollapse}
                   aria-controls="statsCol">
-                    &#11160;
+                     {isCollapse ? <>&#11162;</> : <>&#11160;</>}
                 </Button>
               </Col>
-            </Row>
-            <Row className="mt-2">
               <Col>
                 <form>
                   <div className='input-group input-group-sm'>
@@ -435,71 +433,42 @@ function Stats()
                 ))}
             </Row>
             <Row className='mt-2 mb-2'>
-              <form>
-                <div className='input-group input-group-sm'>
-                  <div className='input-group-text'>
-                    <input type="radio" name="tansaction-type-form" id="radio-all" onChange={() => addTransactionTypeFilter("radio-all")}/>
-                  </div>
-                  <label className='form-control form-check-label me-3'>Wszystkie</label>
-                  <div className='input-group-text'>
-                    <input type="radio" name="tansaction-type-form" id="radio-income" onChange={() => addTransactionTypeFilter("radio-income")}/>
-                  </div>
-                  <label className='form-control form-check-label me-3'>Przychody</label>
-                  <div className='input-group-text'>
-                    <input type="radio" name="tansaction-type-form" id="radio-expenses" onChange={() => addTransactionTypeFilter("radio-expenses")}/>
-                  </div>
-                  <label className='form-control form-check-label me-3'>Wydatki</label>
-                  <div className='input-group-text'>
-                    <input type="radio" name="tansaction-type-form" id="radio-excluded" onChange={() => addTransactionTypeFilter("radio-excluded")}/>
-                  </div>
-                  <label className='form-control form-check-label me-3'>Nie uwzględniane</label>
-                </div>
-              </form>
+              <Col>
+                <select className='form-select form-select-sm'>
+                    <option>Wszystkie</option>
+                    <option>Przychody</option>
+                    <option>Wydatki</option>
+                    <option>Nie uwzględniane</option>
+                </select>
+              </Col>
+              <Col>
+                <select className='form-select form-select-sm'>
+                    <option>Jedzenie</option>
+                </select>
+              </Col>
+              <Col>
+                <select className='form-select form-select-sm'>
+                    <option>Zamawiane</option>
+                </select>
+              </Col>
+              <Col>
+                <select className='form-select form-select-sm'>
+                    <option>Płatność kartą</option>
+                </select>
+              </Col> 
             </Row>
-            <Row className='overflow-y-auto border rounded-3'>
+            <Row className='overflow-y-auto border border-secondary'>
               <table id="transactions-table" className="table table-hover table-sm">
                 <thead className="table-primary">
                   <tr style={{ position: 'sticky', top: 0, fontSize: '12px' }}>
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Category</th>
-                    <th>
-                      Subcategory
-                      <select id="drop-down-subcategory">
-                        <option>Zamawiane</option>
-                      </select>
-                    <button className="btn btn-primary btn-sm" onClick={addSubcategoryColumnFilter}>Filter</button>
-                    </th>
-                    <th>
-                      Description
-                      <input
-                        className='form-control form-control-sm'
-                        id="column-search-input-desc"
-                        type="text"
-                        placeholder='Search...'
-                        onKeyUp={event => filterColumnByText(event)}
-                      />
-                    </th>
-                    <th>
-                      Additional info 1
-                      <input className='form-control form-control-sm' type="text" id="search-box-ad-info" placeholder='Search...'/>
-                      <select id="drop-down-search-type-ad-info-1">
-                        <option>contains</option>
-                        <option>doesn't contain</option>
-                      </select>
-                      <button className="btn btn-primary btn-sm" onClick={addColumnFilter}>Filter</button>
-                    </th>
+                    <th>Subcategory</th>
+                    <th>Description</th>
+                    <th>Additional info 1</th>
                     <th>Additional info 2</th>
-                    <th>
-                      Sender
-                      <input
-                        className='form-control form-control-sm'
-                        id="column-search-input-sender"
-                        type="text"
-                        placeholder='Search...'
-                        onKeyUp={event => filterColumnByText(event)}
-                      />
-                    </th>
+                    <th>Sender</th>
                     <th>Receiver</th>
                     <th>Type</th>
                   </tr>
