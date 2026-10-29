@@ -107,32 +107,3 @@ export function getMonthlyStatBarChartData(stats) {
 
   return monthlyStatsBarChartData;
 }
-
-export function getMonthlyStatLineChartData(stats) {
-  let monthlyStatsBarChartData = {}
-  if (stats.statMonth.length != 0) {
-    const labels = stats.statMonth.map(monthItem => monthItem.monthName);
-    monthlyStatsBarChartData = {
-      labels,
-      datasets: [
-        {
-          label: 'Income',
-          data: stats.statMonth.map(monthItem => monthItem.income.toFixed(2)),
-          borderColor: 'rgb(75, 192, 192)'
-        },
-        {
-          label: 'Expenses',
-          data: stats.statMonth.map(monthItem => -1*monthItem.expenses.toFixed(2)),
-          borderColor: 'rgb(255, 99, 132)'
-        },
-        {
-          label: 'Savings',
-          data: stats.statMonth.map(monthItem => monthItem.balance.toFixed(2)),
-          borderColor: 'rgb(53, 162, 235)'
-        },        
-      ],
-    };
-  }
-
-  return monthlyStatsBarChartData;
-}
