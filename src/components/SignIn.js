@@ -12,11 +12,10 @@ function SignIn()
     }
 
     function handleSignIn() {
-        // Get form data
+        window.event.preventDefault();
+
         const form = document.getElementById('id_sign_in_form');
         const formData = new FormData(form);
-
-        // Convert form data to an object
         const data = {};
         formData.forEach((value, key) => {
             data[key] = value;
@@ -29,7 +28,7 @@ function SignIn()
         xhr.setRequestHeader('Authorization', 'Basic ' + creds)
         xhr.send(null);
         
-        if (xhr.status === 200) navigate('/stats', {
+        if (xhr.status === 200) navigate('/overall', {
             state: {
                 username: data['name-enter-login-input'],
                 password: data['name-enter-psw-input']

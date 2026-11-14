@@ -8,11 +8,10 @@ function SignUp() {
     const navigate = useNavigate();
 
     function handleSignUp() {
-        // Get form data
+        window.event.preventDefault();
+
         const form = document.getElementById('id_sign_up_form');
         const formData = new FormData(form);
-
-        // Convert form data to an object
         const data = {};
         formData.forEach((value, key) => {
             data[key] = value;
@@ -22,9 +21,15 @@ function SignUp() {
         const creds = btoa(data['name-set-login-input'] + ":" + data['name-set-psw-input'])
         const createUserUrl = process.env.REACT_APP_BACKEND_URL + '/user/create'
         xhr.open("POST", createUserUrl, false);
-        xhr.setRequestHeader('mode', 'no-cors');
         xhr.send(creds);
-        navigate('/upload_transactions')
+
+        if (xhr.status === 200) navigate('/upload_transactions', {
+            state: {
+                username: data['name-set-login-input'],
+                password: data['name-set-psw-input']
+            },
+            replace: true
+        });
     }
 
     return (
