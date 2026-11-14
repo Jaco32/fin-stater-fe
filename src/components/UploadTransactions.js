@@ -1,10 +1,11 @@
 import Header from './Header';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function UploadTransactions() {
-    console.log("Rendering - UploadTransactions")
+    console.log("UploadTransactions - Rendering")
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     function handleFileUpload() {
         const file = document.getElementById('id-transactions-file-upload').files[0];
@@ -13,17 +14,18 @@ function UploadTransactions() {
             function(value) {
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", process.env.REACT_APP_BACKEND_URL + '/transaction/upload/', false);
-                xhr.setRequestHeader('mode', 'no-cors');
+                const creds = btoa(location.state.username + ":" + location.state.password);
+                xhr.setRequestHeader('Authorization', 'Basic ' + creds)
                 if (file.name.split(".")[1] === "xlsx") {
                     xhr.setRequestHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 } else {
                     xhr.setRequestHeader('Content-Type', 'text/csv');
                 }
                 xhr.send(value);
-                navigate("/stats", {
+                navigate("/overall", {
                     state: {
-                        username: 'latest0902',
-                        password: 'latest0902'
+                        username: location.state.username,
+                        password: location.state.password
                     },
                     replace: true
                 })

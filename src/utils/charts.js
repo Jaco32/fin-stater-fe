@@ -1,28 +1,30 @@
 import { mapCategories } from './parse'
 
-export function getOverallStatBarChartData(stats) {
+export function getOverallStatBarChartData(overallStats) {
+    console.log('getOverallStatBarChartData - entered');
+
     let overallStatBarChartData = {}
-    if (stats.stat.length != 0) {
+    if (overallStats.length != 0) {
       overallStatBarChartData = {
         labels: [''],
         datasets: [
           {
             label: 'Przychód',
-            data: [stats.stat[0].income.toFixed(2)],
+            data: [overallStats[0].income.toFixed(2)],
             backgroundColor: 'rgba(75, 192, 192, 0.65)',
             borderColor: 'gray',
             borderWidth: 1
           },
           {
             label: 'Wydatki',
-            data: [-1*stats.stat[0].expenses.toFixed(2)],
+            data: [-1*overallStats[0].expenses.toFixed(2)],
             backgroundColor: 'rgba(255, 99, 132, 0.65)',
             borderColor: 'gray',
             borderWidth: 1
           },
           {
             label: 'Dochód',
-            data: [stats.stat[0].periodBalance.toFixed(2)],
+            data: [overallStats[0].periodBalance.toFixed(2)],
             backgroundColor: 'rgba(53, 162, 235, 0.65)',
             borderColor: 'gray',
             borderWidth: 1
@@ -47,15 +49,15 @@ const colorPalette = [
   'rgba(240, 128, 128, 0.65)'
 ]
 
-export function getCategorizedStatBarChartData(stats) {
+export function getCategorizedStatBarChartData(categorizedStats) {
   let categorizedStatBarChartData = {}
-  if (stats.statCategorized.length != 0) {
-    const categorizedBarLabels = stats.statCategorized.map(categoryItem => categoryItem.category).map(category => mapCategories(category));
+  if (categorizedStats.length != 0) {
+    const categorizedBarLabels = categorizedStats.map(categoryItem => categoryItem.category).map(category => mapCategories(category));
     let categorizedBarDataSet = []
     for(let i = 0; i < categorizedBarLabels.length; i++) {
       categorizedBarDataSet.push({
         label: categorizedBarLabels[i],
-        data: [stats.statCategorized[i].expense.toFixed(2)*-1],
+        data: [categorizedStats[i].expense.toFixed(2)*-1],
         backgroundColor: colorPalette[i],
         borderColor: 'gray',
         borderWidth: 1
@@ -70,32 +72,32 @@ export function getCategorizedStatBarChartData(stats) {
   return categorizedStatBarChartData
 }
 
-export function getMonthlyStatBarChartData(stats) {
+export function getMonthlyStatBarChartData(monthlyStats) {
   let monthlyStatsBarChartData = {}
-  if (stats.statMonth.length != 0) {
-    const labels = stats.statMonth.map(monthItem => monthItem.monthName);
+  if (monthlyStats.length != 0) {
+    const labels = monthlyStats.map(monthItem => monthItem.monthName);
     monthlyStatsBarChartData = {
       labels,
       datasets: [
         {
-          label: 'Income',
-          data: stats.statMonth.map(monthItem => monthItem.income.toFixed(2)),
+          label: 'Przychód',
+          data: monthlyStats.map(monthItem => monthItem.income.toFixed(2)),
           backgroundColor: 'rgba(75, 192, 192, 0.65)',
           borderColor: 'gray',
           borderWidth: 1,
           stack: 'Stack 0',
         },
         {
-          label: 'Expenses',
-          data: stats.statMonth.map(monthItem => -1*monthItem.expenses.toFixed(2)),
+          label: 'Wydatki',
+          data: monthlyStats.map(monthItem => -1*monthItem.expenses.toFixed(2)),
           backgroundColor: 'rgba(255, 99, 132, 0.65)',
           borderColor: 'gray',
           borderWidth: 1,
           stack: 'Stack 1',
         },
         {
-          label: 'Savings',
-          data: stats.statMonth.map(monthItem => monthItem.balance.toFixed(2)),
+          label: 'Dochód',
+          data: monthlyStats.map(monthItem => monthItem.balance.toFixed(2)),
           backgroundColor: 'rgba(53, 162, 235, 0.65)',
           borderColor: 'gray',
           borderWidth: 1,          

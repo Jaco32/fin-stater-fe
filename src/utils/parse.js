@@ -2,7 +2,7 @@ export function parseTransactions(transactions, toogleFunction) {
     if (transactions !== undefined) {
         const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
         const transactionsItems = []
-        console.log("Parsing " + transactions.length + " transactions")
+        console.log("parseTransactions - count: " + transactions.length)
         for (let i = 0; i < transactions.length; i++) {
             if (transactions[i].usedForCalculation === false) {
                 console.log("parseTransactions - setting transaction " + i + " as not used")
@@ -55,12 +55,14 @@ function switchView(event) {
 
 export function parseOverallStats(overallStats)
 {
+    console.log("parseOverallStats - entered");
+
     const overallStatsTBody = [];
-    if (overallStats !== undefined) {
-        const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
-        for (let i = 0; i < overallStats.length; i++) {
-            if(overallStats[i].from_date !== null) {
-                overallStatsTBody.push(<tr onClick={event => switchView(event)}>
+    const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
+    for (let i = 0; i < overallStats.length; i++) {
+        if(overallStats[i].from_date !== null) {
+            overallStatsTBody.push(
+                <tr key={i} onClick={event => switchView(event)}>
                     <td>{overallStats[i].viewName}</td>
                     <td>{overallStats[i].fromDate.substr(0, 10)}</td>
                     <td>{overallStats[i].toDate.substr(0, 10)}</td>
@@ -77,8 +79,8 @@ export function parseOverallStats(overallStats)
                     <td>{plnFormatter.format(overallStats[i].avarageIncome.toFixed(2))}</td>
                     <td>{plnFormatter.format(-1*overallStats[i].avarageExpenses.toFixed(2))}</td>
                     <td>{plnFormatter.format(overallStats[i].avarageBalance.toFixed(2))}</td>
-                </tr>)
-            }
+                </tr>
+            )
         }
     }
 
@@ -151,20 +153,4 @@ export function mapSubcategories(subCategory) {
         default:
             return "Pozostałe";
     }
-}
-
-export function parseAvarageStats(avarageStats) {
-    const avarageStatsTBody = [];
-    if (avarageStats !== undefined) {
-        const plnFormatter = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
-        for(let i = 0; i < avarageStats.length; i++) {
-            avarageStatsTBody.push(<tr>
-                <td>{plnFormatter.format(avarageStats[i].avarageIncome.toFixed(2))}</td>
-                <td>{plnFormatter.format(-1*avarageStats[i].avarageExpenses.toFixed(2))}</td>
-                <td>{plnFormatter.format(avarageStats[i].avarageBalance.toFixed(2))}</td>
-            </tr>)
-        }
-    }
-
-    return avarageStatsTBody;
 }
