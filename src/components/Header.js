@@ -92,14 +92,14 @@ function Header() {
                 <Navbar.Brand href="/">FinStat</Navbar.Brand>
                 <Navbar.Text>Statystyki Finansowe</Navbar.Text>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                
+
                 {add_file_flag && (
-                    <Form>
-                        <InputGroup>
-                            <Form.Label htmlFor="add-file">Dodaj plik z tranzakcjami</Form.Label>
-                            <Form.Control type="file" onChange={handleFileUpload} id="add-file" style={{ opacity: 1, zIndex: -1, position: "absolute" }}/>
-                        </InputGroup>
-                    </Form>
+                    <Navbar.Text>
+                        <Form className="ms-2">
+                            <label htmlFor="add-file">Dodaj plik z tranzakcjami</label>
+                            <Form.Control type="file" onChange={handleFileUpload} id="add-file" hidden/>
+                        </Form>
+                    </Navbar.Text>
                 )}
                     
                 {log_out_flag && (

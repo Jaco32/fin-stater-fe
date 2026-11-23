@@ -133,7 +133,7 @@ function Transactions() {
     return (
       <Container className='mt-2 mw-100 small'>      
         <Row>
-          <Col className='border shadow-sm rounded-3 border-secondary ms-2 me-2' style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
+          <Col className='border border-secondary rounded-3 shadow-sm ms-2 me-2' style={{ minWidth: 0, flexDirection: "column", display: "flex" }}>
             <Row className="mt-2">
               <Col>
                 <form>
@@ -145,7 +145,6 @@ function Transactions() {
               </Col>
             </Row>
             <Row className='mt-2'>
-              <Col>
                 <form>
                   <div className="input-group input-group-sm">
                     <span className="input-group-text">&#128269;</span>
@@ -158,8 +157,8 @@ function Transactions() {
                     />
                   </div>
                 </form>
-              </Col>
-              <Col>
+            </Row>
+            <Row className='mt-2'>
                 <form>
                   <div className='input-group input-group-sm'>
                     <input type="date" className='form-control form-control-sm' id="table-search-date-from"/>
@@ -167,33 +166,40 @@ function Transactions() {
                     <button onClick={addDateFilter} className="btn btn-primary btn-sm">Filtruj</button>
                   </div>
                 </form>
-              </Col>
             </Row>
-            <Row className='mt-2 mb-2'>
+            <Row className='mt-2'>
               <Col>
-                <select className='form-select form-select-sm'>
+              <select className='form-select form-select-sm'>
                     <option>Wszystkie</option>
                     <option>Przychody</option>
                     <option>Wydatki</option>
                     <option>Nie uwzględniane</option>
                 </select>
               </Col>
+            </Row>
+            <Row className='mt-2'>
               <Col>
                 <select className='form-select form-select-sm'>
                     <option>Jedzenie</option>
                 </select>
               </Col>
+            </Row>
+            <Row className='mt-2'>
               <Col>
                 <select className='form-select form-select-sm'>
                     <option>Zamawiane</option>
                 </select>
               </Col>
+            </Row>
+            <Row className='mt-2'>
               <Col>
                 <select className='form-select form-select-sm'>
                     <option>Płatność kartą</option>
                 </select>
-              </Col> 
+              </Col>
             </Row>
+          </Col>
+          <Col className='col-sm-9'>  
             <Row className='overflow-y-auto border rounded-3 border-secondary'>
               <table id="transactions-table" className="table table-hover table-sm">
                 <thead className="table-primary">
