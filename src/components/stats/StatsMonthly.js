@@ -19,13 +19,16 @@ import {
   LineElement,
   Title
 } from 'chart.js';
+import { useLocation } from 'react-router-dom';
 
 function StatsMonthly() {
     console.log("StatsMonthly - entered")
 
+    const location = useLocation(); 
+
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title);
 
-    const monthlyStats = getMonthlyStatsSynch()
+    const monthlyStats = getMonthlyStatsSynch([location.state.username, location.state.password])
     const monthlyStatBarChartData = getMonthlyStatBarChartData(monthlyStats)
     const monthlyStatBarChartOptions = {
       responsive: true,
