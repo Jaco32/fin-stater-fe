@@ -19,13 +19,16 @@ import {
   LineElement,
   Title
 } from 'chart.js';
+import { useLocation } from 'react-router-dom';
 
 function StatsCategorized() {
     console.log("StatsCategorized - entered");
 
+    const location = useLocation(); 
+
     Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title);
 
-    const statsCategorized = getCategorizedStatsSynch();
+    const statsCategorized = getCategorizedStatsSynch([location.state.username, location.state.password]);
     const categorizedBarData = getCategorizedStatBarChartData(statsCategorized);
     const categorizedBarOptions = {
       indexAxis: 'y',

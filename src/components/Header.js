@@ -93,22 +93,22 @@ function Header() {
                 <Navbar.Text>Statystyki Finansowe</Navbar.Text>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-                {add_file_flag && (
-                    <Navbar.Text>
-                        <Form className="ms-2">
-                            <label htmlFor="add-file">Dodaj plik z tranzakcjami</label>
-                            <Form.Control type="file" onChange={handleFileUpload} id="add-file" hidden/>
-                        </Form>
-                    </Navbar.Text>
-                )}
-                    
-                {log_out_flag && (
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav>
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav>
+                        {add_file_flag && (
+                            <Nav.Link>
+                                <Form className="ms-2">
+                                    <label htmlFor="add-file">Dodaj plik z tranzakcjami</label>
+                                    <Form.Control type="file" onChange={handleFileUpload} id="add-file" hidden/>
+                                </Form>
+                            </Nav.Link>
+                        )}
+                            
+                        {log_out_flag && (
                             <Nav.Link onClick={handleStatsClear}>Wyczyść statystyki</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                )}
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
 
                 <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end me-2">
                     <Nav>
