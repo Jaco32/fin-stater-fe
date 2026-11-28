@@ -10,7 +10,7 @@ export function filterTableByTransactionCategory() {
 }
 
 export function filterTableByMonth(event) {
-    const month = event.target.parentNode.getElementsByTagName("td")[0].textContent;
+    const month = event.target.parentNode.getElementsByTagName("td")[1].textContent;
     const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
 
     for (let i = 1; i < tr.length; i++) {

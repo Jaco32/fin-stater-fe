@@ -37,16 +37,16 @@ export function getOverallStatBarChartData(overallStats) {
 }
 
 const colorPalette = [
-  'rgba(75, 192, 192, 0.65)',
-  'rgba(255, 99, 132, 0.65)',
-  'rgba(53, 162, 235, 0.65)',
-  'rgba(255, 205, 86, 0.65)',
-  'rgba(255, 255, 0, 0.65)',
-  'rgba(138, 43, 226, 0.65)',
-  'rgba(211, 211, 211, 0.65)',
-  'rgba(139, 69, 19, 0.65)',
-  'rgba(32, 178, 170, 0.65)',
-  'rgba(240, 128, 128, 0.65)'
+  'rgb(255, 99, 132)',
+  'rgba(255, 99, 132, 0.9)',
+  'rgba(255, 99, 132, 0.8)',
+  'rgba(255, 99, 132, 0.7)',
+  'rgba(255, 99, 132, 0.6)',
+  'rgba(255, 99, 132, 0.5)',
+  'rgba(255, 99, 132, 0.4)',
+  'rgba(255, 99, 132, 0.3)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 99, 132, 0.1)',
 ]
 
 export function getCategorizedStatBarChartData(categorizedStats) {

@@ -42,6 +42,7 @@ function Categorized({stPerCt}) {
                     <td></td>
                     <td style={{ textIndent: '20px' }}>{subcategoriesKeys[j]}</td>
                     <td>{plnFormatter.format(subcategoriesValues[j]*-1)}</td>
+                    <td></td>
                   </tr>
                 )
             }
@@ -49,7 +50,7 @@ function Categorized({stPerCt}) {
 
           categorizedStatsTBody.push(
             <>
-              <tr key={i} onclick={filterTableByTransactionCategory}>
+              <tr key={i}>
                   <td onClick={subcategoriesKeys.length ? (event) => toogleSubcategorized(event) : () => {}}
                       style={{ textAlign: 'right', cursor: 'pointer'}}
                   >
@@ -57,6 +58,7 @@ function Categorized({stPerCt}) {
                   </td>
                   <td className="filter-by-category">{mappedCategories[i]}</td>
                   <td className="filter-by-category">{plnFormatter.format(-1*categorizedStats[i].expense.toFixed(2))}</td>
+                  <td onClick={filterTableByTransactionCategory} style={{ cursor: 'pointer'}}>&#10024;</td>
               </tr>
               {toogle.get(mappedCategories[i]) && subcategorizedStatsTBody}
             </>
@@ -76,6 +78,7 @@ function Categorized({stPerCt}) {
                     <th></th>
                     <th className="text-secondary">Kategoria</th>
                     <th className="text-secondary">Wydatki</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody style={{ fontSize: '12px'}}>{statsPerCategory}</tbody>

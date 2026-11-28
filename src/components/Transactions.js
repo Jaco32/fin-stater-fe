@@ -12,7 +12,7 @@ function Transactions() {
     console.log("Transactions - current dateFilters:");
     for (const f of dateFilters.entries()) console.log(f);
 
-    const [transactionExclusionTrigger, setTransactionExclusion] = useState(false);    
+    const [transactionExclusionTrigger, setTransactionExclusion] = useState(false);
     const location = useLocation();
     const transactionsTableRef = useRef(null);
     const navigate = useNavigate();
@@ -24,7 +24,9 @@ function Transactions() {
       console.log("Transactions - useEffect - number of transaction rows: " + transactionRows.length);
       for (let i = 0; i < transactionRows.length; i++)
         visibleRows.push(i);
+
       filterTableByDate()
+      filterTableByTransactionType()
     })
 
     function filterTableByDate() {
@@ -37,7 +39,7 @@ function Transactions() {
         let indexesToDrop = []
         for (let i = 0; i < visibleRows.length; i++) {
           const tdDate = new Date(tr[i].getElementsByTagName("td")[0].textContent);
-          if( !((tdDate >= dateFrom) && (tdDate <= dateTo))) {
+          if( !((tdDate >= dateFrom) && (tdDate <= dateTo)) ) {
             tr[i].style.display = "none";
             indexesToDrop.push(i)
           }
@@ -47,6 +49,28 @@ function Transactions() {
         visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
         console.log("Transactions - filterTableByDate - visibleRows count after filter:" + visibleRows.length)
       })
+    }
+
+    function filterTableByTransactionType() {
+      console.log("Stats - filterTableByTransactionType - entered");
+
+      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
+      let indexesToDrop = []
+      for (let i = 0; i < visibleRows.length; i++) {
+        const tdAmount = parseFloat(tr[visibleRows[i]].getElementsByTagName("td")[1].textContent.split(' ')[0].replace(",", "."));
+        if (transactionTypeFilter === "radio-income" && (tdAmount < 0)) {
+            tr[visibleRows[i]].style.display = "none";
+            indexesToDrop.push(i);
+        }
+        else if (transactionTypeFilter === "radio-expenses" && (tdAmount > 0)) {
+            tr[visibleRows[i]].style.display = "none";
+            indexesToDrop.push(i);
+        }
+      }
+
+      console.log("Stats - filterTableByTransactionType - indexesToDrop: " + indexesToDrop)
+      visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
+      console.log("Stats - filterTableByTransactionType - visibleRows count after filter:" + visibleRows.length)
     }
 
     function calculateView() {
@@ -112,7 +136,7 @@ function Transactions() {
       console.log("Transactions - addDateFilter - dateFrom: " + dateFrom + ", dateTo: " + dateTo);
 
       const newFilters = new Map();
-      newFilters.set("Date Filter 1", [dateFrom, dateTo]);
+      newFilters.set("Date Filter " + String(dateFilters.size + 1), [dateFrom, dateTo]);
       setDateFilters(newFilters);
     }
 
@@ -169,8 +193,8 @@ function Transactions() {
             </Row>
             <Row className='mt-2'>
               <Col>
-              <select className='form-select form-select-sm'>
-                    <option>Wszystkie</option>
+                <select className='form-select form-select-sm' onSelect={}>
+                    <option>Wszystkie tranzakcje</option>
                     <option>Przychody</option>
                     <option>Wydatki</option>
                     <option>Nie uwzględniane</option>
@@ -197,6 +221,14 @@ function Transactions() {
                     <option>Płatność kartą</option>
                 </select>
               </Col>
+            </Row>
+            <Row>
+                {Array.from(dateFilters, ([key, value]) => (
+                  <span id={key}>
+                    {value[0].toLocaleDateString()} - {value[1].toLocaleDateString()}
+                    <button type="button" className="btn-close"></button>
+                  </span>
+                ))}
             </Row>
           </Col>
           <Col className='col-sm-9'>  

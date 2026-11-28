@@ -5,7 +5,6 @@ function Stats()
     const [subCatFilter, setSubCatFilter] = useState(new Map())
 
     useEffect(() => {
-      filterTableByTransactionType()
       //filterColumnByTextWithCondition()
       //filterSubcategoryColumnByText()
     })
@@ -100,28 +99,6 @@ function Stats()
         }
         visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
       })
-    }
-
-    function filterTableByTransactionType() {
-      console.log("Stats - filterTableByTransactionType - entered");
-
-      const tr = document.getElementById("transactions-table").getElementsByTagName("tr");
-      let indexesToDrop = []
-      for (let i = 0; i < visibleRows.length; i++) {
-        const tdAmount = parseFloat(tr[visibleRows[i]].getElementsByTagName("td")[1].textContent.split(' ')[0].replace(",", "."));
-        if (transactionTypeFilter === "radio-income" && (tdAmount < 0)) {
-            tr[visibleRows[i]].style.display = "none";
-            indexesToDrop.push(i);
-        }
-        else if (transactionTypeFilter === "radio-expenses" && (tdAmount > 0)) {
-            tr[visibleRows[i]].style.display = "none";
-            indexesToDrop.push(i);
-        }
-      }
-
-      console.log("Stats - filterTableByTransactionType - indexesToDrop: " + indexesToDrop)
-      visibleRows = visibleRows.filter(it => !indexesToDrop.includes(it))
-      console.log("Stats - filterTableByTransactionType - visibleRows count after filter:" + visibleRows.length)
     }
 
     function filterExcludedTransactions() {

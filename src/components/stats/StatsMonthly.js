@@ -31,7 +31,6 @@ function StatsMonthly() {
     const monthlyStats = getMonthlyStatsSynch([location.state.username, location.state.password])
     const monthlyStatBarChartData = getMonthlyStatBarChartData(monthlyStats)
     const monthlyStatBarChartOptions = {
-      responsive: true,
       interaction: {
         mode: 'index',
         intersect: false,
@@ -43,8 +42,7 @@ function StatsMonthly() {
         y: {
           stacked: true,
         },
-      },
-      aspectRatio: 1.2
+      }
     };
 
     return (
